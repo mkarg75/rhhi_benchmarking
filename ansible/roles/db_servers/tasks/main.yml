@@ -1,0 +1,74 @@
+- name: Add EPEL repository
+  yum_repository:
+    name: epel
+    description: EPEL YUM repo
+    enabled: yes
+    baseurl: http://download.fedoraproject.org/pub/epel/7/$basearch
+    gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
+    gpgcheck: yes
+
+- name: yum-clean-metadata
+  command: yum clean metadata
+  args:
+    warn: no
+
+- name: Install collectd and required plugins
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - collectd
+    - collectd-dbi
+
+- name: Copy collectd config file 
+  copy:
+    src: files/collectd.conf
+    dest: /etc/collectd.conf
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Install mariadb
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - mariadb-server
+    - MySQL-python 
+
+- name: Enable mysql performance schema
+  lineinfile:
+    path: /etc/my.cnf.d/server.cnf
+    state: present
+    firstmatch: yes
+    regexp: '\[mysqld\]'
+    insertafter: '\[mysqld\]'
+    line: 'performance_schema=ON'
+
+- name: Start and enable mariadb-server
+  systemd:
+    state: started
+    daemon_reload: yes
+    enabled: yes
+    name: mariadb
+
+- name: Add grafana user to the mariadb
+  mysql_user:
+    name: 'grafana'
+    password: 'monitoring'
+    priv: '*.*:ALL'
+    state: present
+    login_user: root
+
+# TODO: disable all the metrics in the performance DB we're not using
+
+- name: Open mariadb firewall ports
+  firewalld:
+    service: mysql
+    permanent: true
+    state: enabled
+    
+
+
+
+

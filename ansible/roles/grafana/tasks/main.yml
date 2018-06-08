@@ -1,0 +1,59 @@
+- name: Add grafana repository
+  yum_repository:
+    name: grafana
+    description: grafana yum repo
+    baseurl: https://packagecloud.io/grafana/stable/el/7/$basearch
+    enabled: yes
+    gpgcheck: yes
+    gpgkey: https://packagecloud.io/gpg.key https://grafanarel.s3.amazonaws.com/RPM-GPG-KEY-grafana
+    sslcacert: /etc/pki/tls/certs/ca-bundle.crt
+    sslverify: yes
+
+- name: Add influxdb repository
+  yum_repository:
+    name: influxdb
+    description: influxdb yum repo
+    baseurl: https://repos.influxdata.com/rhel/\$releasever/\$basearch/stable
+    enabled: yes
+    gpgcheck: yes
+    gpgkey: https://repos.influxdata.com/influxdb.key
+
+- name: yum-clean-metadata
+  command: yum clean metadata
+  args:
+    warn: no
+
+- name: Install grafana and influxDB
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - grafana
+    - influxdb
+
+- name: Open required ports for grafana and influxDB
+  firewalld:
+    port: 8086/tcp
+    permanent: true
+    state: enabled
+
+- firewalld:
+    port: 8088/tcp
+    permanent: true
+    state: enabled
+
+- firewalld:
+    port: 3000/tcp
+    permanent: true
+    state: enabled
+
+- name: Start and enable grafana and influxDB
+  systemd:
+    state: started
+    daemon_reload: yes
+    enabled: yes
+    name: "{{ item }}"
+  with_items:
+    - "grafana-server"
+    - "influxdb"
+
