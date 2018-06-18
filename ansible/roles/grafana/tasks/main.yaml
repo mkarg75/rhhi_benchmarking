@@ -23,6 +23,11 @@
   args:
     warn: no
 
+- name: Install mariadb
+  yum:
+    name: mariadb-server
+    state: latest
+
 - name: Install grafana and influxDB
   yum:
     name: "{{ item }}"
@@ -31,7 +36,7 @@
     - grafana
     - influxdb
 
-- name: Open required ports for grafana and influxDB
+- name: Open required ports for mariadb, grafana and influxDB
   firewalld:
     port: 8086/tcp
     permanent: true
@@ -47,7 +52,12 @@
     permanent: true
     state: enabled
 
-- name: Start and enable grafana and influxDB
+- firewalld:
+    port: 3306/tcp
+    permanent: true
+    state: enabled
+
+- name: Start and enable mariadb, grafana and influxDB
   systemd:
     state: started
     daemon_reload: yes
@@ -56,4 +66,16 @@
   with_items:
     - "grafana-server"
     - "influxdb"
+    - "mariadb"
+
+- name: Copy the mysql schema 
+  copy:
+    src: "{{ role_path }}/files/create.sql"
+    dest: /root/create.sql
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Create the database and its table
+  command: /usr/bin/mysql -u root < /root/create.sql
 

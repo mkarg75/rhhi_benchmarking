@@ -1,3 +1,7 @@
+DROP DATABASE IF EXISTS benchmarking;
+CREATE DATABASE benchmarking;
+USE benchmarking;
+
 DROP TABLE IF EXISTS results;
 
 CREATE TABLE IF NOT EXISTS results (
