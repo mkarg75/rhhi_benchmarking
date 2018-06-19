@@ -24,8 +24,7 @@
        enabled: yes
 
    - name: pull down load driver containers
-     docker_image:
-       name: "{{ item }}"
-      with_items:
+     docker_image: name={{ item }}
+     with_items:
         - dmesser/ds2mysqldriver
         - dmesser/ds3webdriver
