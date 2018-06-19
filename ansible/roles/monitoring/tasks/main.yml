@@ -7,6 +7,11 @@
     gpgkey: https://archive.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7
     gpgcheck: yes
 
+- name: enable required repositories
+  shell: subscription-manager repos --enable={{ item }}
+  with_items:
+    - rhel-7-server-rpms
+
 - name: yum-clean-metadata
   command: yum clean metadata
   args:
