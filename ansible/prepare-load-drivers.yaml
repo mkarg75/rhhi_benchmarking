@@ -9,7 +9,7 @@
   tasks:
 
    - name: enable required repositories
-     shell: subscription-manager repos --enable={{ item }}
+     rhsm_repository: name={{ item }}
      with_items:
        - rhel-7-server-rpms
        - rhel-7-server-extras-rpms

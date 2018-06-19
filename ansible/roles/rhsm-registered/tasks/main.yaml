@@ -8,7 +8,9 @@
     activationkey: "{{ rhsm_activation_key }}"
     org_id: "{{ rhsm_org_id }}"
 
-- name: disable all repositories
-  shell: subscription-manager repos --disable=*
+- name: disable all RHSM repositories
+  rhsm_repository:
+    name: '*'
+    state: disabled
 
 ...
