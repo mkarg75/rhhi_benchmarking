@@ -1,0 +1,16 @@
+---
+
+- include_vars: credentials/rhsm-credentials.yaml
+
+- name: register system to CDN
+  redhat_subscription:
+    state: present
+    activationkey: "{{ rhsm_activation_key }}"
+    org_id: "{{ rhsm_org_id }}"
+
+- name: disable all RHSM repositories
+  rhsm_repository:
+    name: '*'
+    state: disabled
+
+...
