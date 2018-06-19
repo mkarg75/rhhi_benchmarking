@@ -21,7 +21,7 @@
 
 - name: Copy collectd config file
   copy:
-    src: files/collectd.conf
+    src: template/collectd.j2
     dest: /etc/collectd.conf
     owner: root
     group: root
