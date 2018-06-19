@@ -1,5 +1,7 @@
 ---
 
+- include_vars: credentials/rhsm-credentials.yaml
+
 - name: register system to CDN
   redhat_subscription:
     state: present
