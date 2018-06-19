@@ -1,0 +1,30 @@
+- name: Add EPEL repository
+  yum_repository:
+    name: epel
+    description: EPEL YUM repo
+    enabled: yes
+    baseurl: http://download.fedoraproject.org/pub/epel/7/$basearch
+    gpgkey: https://archive.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7
+    gpgcheck: yes
+
+- name: yum-clean-metadata
+  command: yum clean metadata
+  args:
+    warn: no
+
+- name: Install collectd and required plugins
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - collectd
+
+- name: Copy collectd config file
+  copy:
+    src: files/collectd.conf
+    dest: /etc/collectd.conf
+    owner: root
+    group: root
+    mode: 0644
+
+
