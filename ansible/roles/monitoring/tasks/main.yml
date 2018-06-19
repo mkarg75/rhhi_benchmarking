@@ -27,4 +27,8 @@
     group: root
     mode: 0644
 
-
+- name: start and enable collectd
+  service:
+    name: collectd
+    state: started
+    enabled: yes
