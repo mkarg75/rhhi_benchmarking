@@ -1,0 +1,12 @@
+---
+
+- name: register system to CDN
+  redhat_subscription:
+    state: present
+    activationkey: "{{ rhsm_activation_key }}"
+    org_id: "{{ rhsm_org_id }}"
+
+- name: disable all repositories
+  shell: subscription-manager repos --disable=*
+
+...
