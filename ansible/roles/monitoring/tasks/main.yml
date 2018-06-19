@@ -7,6 +7,11 @@
     gpgkey: https://archive.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7
     gpgcheck: yes
 
+- name: enable required repositories
+  rhsm_repository:
+    name: rhel-7-server-rpms
+
+
 - name: yum-clean-metadata
   command: yum clean metadata
   args:
@@ -27,4 +32,8 @@
     group: root
     mode: 0644
 
-
+- name: start and enable collectd
+  service:
+    name: collectd
+    state: started
+    enabled: yes

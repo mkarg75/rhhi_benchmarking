@@ -1,0 +1,30 @@
+---
+
+- hosts: load-drivers
+
+  roles:
+    - rhsm-registered
+    - monitoring
+
+  tasks:
+
+   - name: enable required repositories
+     rhsm_repository: name={{ item }}
+     with_items:
+       - rhel-7-server-rpms
+       - rhel-7-server-extras-rpms
+
+   - name: install docker
+     package: name=docker state=present
+
+   - name: start and enable docker
+     service:
+       name: docker
+       state: started
+       enabled: yes
+
+   - name: pull down load driver containers
+     docker_image: name={{ item }}
+     with_items:
+        - dmesser/ds2mysqldriver
+        - dmesser/ds3webdriver
