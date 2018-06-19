@@ -8,6 +8,7 @@
     gpgkey: https://packagecloud.io/gpg.key https://grafanarel.s3.amazonaws.com/RPM-GPG-KEY-grafana
     sslcacert: /etc/pki/tls/certs/ca-bundle.crt
     sslverify: yes
+    state: present
 
 - name: Add influxdb repository
   yum_repository:
@@ -17,6 +18,12 @@
     enabled: yes
     gpgcheck: yes
     gpgkey: https://repos.influxdata.com/influxdb.key
+    state: present
+
+- name: Disable HTB repository
+  command: subscription-manager repos --disable=rhel-7-server-htb-rpms
+  args: 
+    warn: no
 
 - name: yum-clean-metadata
   command: yum clean metadata
@@ -57,6 +64,24 @@
     permanent: true
     state: enabled
 
+- firewalld:
+    port: 25825/tcp
+    permanent: true
+    state: enabled
+
+- name: Reload firewalld configuration
+  command: firewall-cmd --reload
+  args:
+    warn: no
+
+- name: Copy the influxdb configuration file
+  copy:
+    src: "{{ role_path }}/files/influxdb.conf"
+    dest: /etc/influxdb/influxdb.conf
+    owner: root
+    group: root
+    mode: 0644
+
 - name: Start and enable mariadb, grafana and influxDB
   systemd:
     state: started
@@ -71,11 +96,13 @@
 - name: Copy the mysql schema 
   copy:
     src: "{{ role_path }}/files/create.sql"
-    dest: /root/create.sql
+    dest: /create.sql
     owner: root
     group: root
-    mode: 0644
+    mode: 0755
 
 - name: Create the database and its table
-  command: /usr/bin/mysql -u root < /root/create.sql
+  shell: /usr/bin/mysql -u root < /create.sql
+  args:
+    executable: /bin/bash
 

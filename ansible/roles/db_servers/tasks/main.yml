@@ -28,15 +28,6 @@
     group: root
     mode: 0644
 
-
-- name: Set up the collectd target host 
-  lineinfile:
-    path: /etc/collectd.conf
-    regexp: 'Server \"192.168.122.174\"'
-    line: 'Server "{{ influxdb_host }}" " 25826"'
-    backup: yes
-
-
 - name: Install mariadb
   yum:
     name: "{{ item }}"
