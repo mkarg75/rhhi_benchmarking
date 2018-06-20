@@ -1,0 +1,10 @@
+- name: Create DS2 DB oVirt VMs
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+
+    - include_tasks: create-ds2-db-ovirt-vm.yaml
+      vars:
+        num: 1

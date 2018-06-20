@@ -1,0 +1,35 @@
+---
+
+- include_vars: credentials/ovirt-credentials.yaml
+
+- name: Create DS2 DB oVirt VM
+  include_role: name=ovirt-ansible-vm-infra
+  vars:
+    engine_url: https://rhvm.microlab/ovirt-engine/api
+    engine_user: admin@internal
+    engine_insecure: true
+
+    ds2_mysql:
+      state: running
+      cluster: Default
+      template: mysql-ds2-25gb-template
+      clone: no
+      memory: 8GiB
+      cores: 4
+      cloud_init:
+        - nic_ip_address: "172.17.0.1{{ num }}"
+        - nic_gateway: 172.17.0.1
+        - nic_netmask: 255.255.255.0
+        - nic_on_boot: true
+        - nic_name: eth0
+        - nic_boot_protocol: static
+        - user_name: ds2
+        - root_password: ds2_user
+        - host_name: "ds2-mysql-test-{{ num }}"
+
+    vms:
+      - name: "ds2-mysql-test-{{ num }}"
+        tag: ds2_mysql_ansible_vm
+        profile: "{{ ds2_mysql }}"
+
+...
