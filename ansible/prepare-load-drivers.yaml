@@ -14,8 +14,11 @@
        - rhel-7-server-rpms
        - rhel-7-server-extras-rpms
 
-   - name: install docker
-     package: name=docker state=present
+   - name: install docker and ansible dependencies
+     package: name={{ item }} state=present
+     with_items:
+       - docker
+       - docker-py
 
    - name: start and enable docker
      service:

@@ -3,8 +3,52 @@
   connection: local
   gather_facts: false
 
+  vars:
+    engine_url: https://rhvm.microlab/ovirt-engine/api
+    engine_user: admin@internal
+
+    ds2_db_vm:
+      name: "ds2-mysql-test-{{ item }}"
+      tag: ds2_mysql_ansible_vm
+      profile:
+        state: running
+        cluster: Default
+        template: mysql-ds2-25gb-template
+        clone: no
+        memory: 8GiB
+        cores: 4
+        disks:
+          - size: 10GiB
+            name: mysql
+            storage_domain: data
+            interface: virtio
+            format: raw
+        cloud_init:
+          - nic_ip_address: "172.17.0.1{{ item }}"
+          - nic_gateway: 172.17.0.1
+          - nic_netmask: 255.255.255.0
+          - nic_on_boot: true
+          - nic_name: eth0
+          - nic_boot_protocol: static
+          - user_name: ds2
+          - root_password: ds2_user
+          - host_name: "ds2-mysql-test-{{ item }}"
+
   tasks:
 
-    - include_tasks: create-ds2-db-ovirt-vm.yaml
+    - assert:
+        that:
+          - how_many is defined
+          - engine_url is defined
+          - engine_user is defined
+
+    - include_vars: credentials/ovirt-credentials.yaml
+
+    - set_fact:
+        ds2_db_vms: "{{ (ds2_db_vms | default([])) + [ds2_db_vm] }}"
+      with_sequence: "start=10 count={{ how_many }}"
+
+    - name: Create DS2 DB oVirt VMs
+      include_role: name=ovirt-ansible-vm-infra
       vars:
-        num: 1
+        vms: "{{ ds2_db_vms }}"
