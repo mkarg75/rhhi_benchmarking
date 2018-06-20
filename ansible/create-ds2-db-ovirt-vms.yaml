@@ -18,12 +18,6 @@
         clone: no
         memory: 8GiB
         cores: 4
-        disks:
-          - size: 10GiB
-            name: mysql
-            storage_domain: data
-            interface: virtio
-            format: raw
         cloud_init:
           - nic_ip_address: "172.17.0.1{{ item }}"
           - nic_gateway: 172.17.0.1
@@ -42,6 +36,7 @@
           - how_many is defined
           - engine_url is defined
           - engine_user is defined
+          - engine_password is defined
 
     - include_vars: credentials/ovirt-credentials.yaml
 
