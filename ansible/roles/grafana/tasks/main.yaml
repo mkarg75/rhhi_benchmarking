@@ -65,7 +65,12 @@
     state: enabled
 
 - firewalld:
-    port: 25825/tcp
+    port: 25826/tcp
+    permanent: true
+    state: enabled
+
+- firewalld:
+    port: 25286/udp
     permanent: true
     state: enabled
 
