@@ -3,12 +3,8 @@
   connection: local
   gather_facts: false
 
-  vars_prompt:
-    - name: how_many
-      prompt: "How many VMs do you want?"
-      default: 1
-
   vars:
+    how_many: 1
     engine_url: https://rhvm.microlab/ovirt-engine/api
     engine_user: admin@internal
 
