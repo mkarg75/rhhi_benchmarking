@@ -1,6 +1,6 @@
 ---
 
-- include_vars: "{{ role_path }}/../credentials/rhsm-credentials.yaml"
+- include_vars: "{{ role_path }}/../../credentials/rhsm-credentials.yaml"
 
 - name: register system to CDN
   redhat_subscription:
