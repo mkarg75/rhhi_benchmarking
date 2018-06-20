@@ -1,0 +1,3 @@
+[submodule "ansible/roles/ovirt-ansible-vm-infra"]
+	path = ansible/roles/ovirt-ansible-vm-infra
+	url = https://github.com/oVirt/ovirt-ansible-vm-infra.git

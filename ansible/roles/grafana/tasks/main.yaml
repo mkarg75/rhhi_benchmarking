@@ -22,7 +22,7 @@
 
 - name: Disable HTB repository
   command: subscription-manager repos --disable=rhel-7-server-htb-rpms
-  args: 
+  args:
     warn: no
 
 - name: yum-clean-metadata
@@ -35,39 +35,28 @@
     name: mariadb-server
     state: latest
 
-- name: Install grafana and influxDB
+- name: Install grafana, influxDB and chronograf
   yum:
     name: "{{ item }}"
     state: present
   with_items:
     - grafana
     - influxdb
+    - chronograf
 
 - name: Open required ports for mariadb, grafana and influxDB
   firewalld:
-    port: 8086/tcp
+    port: "{{ item }}"
     permanent: true
     state: enabled
-
-- firewalld:
-    port: 8088/tcp
-    permanent: true
-    state: enabled
-
-- firewalld:
-    port: 3000/tcp
-    permanent: true
-    state: enabled
-
-- firewalld:
-    port: 3306/tcp
-    permanent: true
-    state: enabled
-
-- firewalld:
-    port: 25825/tcp
-    permanent: true
-    state: enabled
+    immediate: yes
+  with_items:
+    - 8086/tcp
+    - 8088/tcp
+    - 8888/tcp
+    - 3000/tcp
+    - 3306/tcp
+    - 25825/tcp
 
 - name: Reload firewalld configuration
   command: firewall-cmd --reload
@@ -76,7 +65,7 @@
 
 - name: Copy the influxdb configuration file
   copy:
-    src: "{{ role_path }}/files/influxdb.conf"
+    src: influxdb.conf
     dest: /etc/influxdb/influxdb.conf
     owner: root
     group: root
@@ -92,10 +81,11 @@
     - "grafana-server"
     - "influxdb"
     - "mariadb"
+    - chronograf
 
-- name: Copy the mysql schema 
+- name: Copy the mysql schema
   copy:
-    src: "{{ role_path }}/files/create.sql"
+    src: create.sql
     dest: /create.sql
     owner: root
     group: root
@@ -105,4 +95,3 @@
   shell: /usr/bin/mysql -u root < /create.sql
   args:
     executable: /bin/bash
-
