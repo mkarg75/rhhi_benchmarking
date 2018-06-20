@@ -360,14 +360,14 @@ LoadPlugin network
 #  IgnoreSelected false
 #</Plugin>
 
-#<Plugin cpu>
-#  ReportByCpu true
-#  ReportByState true
-#  ValuesPercentage false
-#  ReportNumCpu false
-#  ReportGuestState false
-#  SubtractGuestState true
-#</Plugin>
+<Plugin cpu>
+  ReportByCpu true
+  ReportByState true
+  ValuesPercentage false
+  ReportNumCpu false
+  ReportGuestState false
+  SubtractGuestState true
+</Plugin>
 #
 #<Plugin csv>
 #	DataDir "/var/lib/collectd/csv"
@@ -671,12 +671,12 @@ LoadPlugin network
 #  Cores "0-2"
 #</Plugin>
 
-#<Plugin interface>
-#	Interface "eth0"
-#	IgnoreSelected false
-#	ReportInactive true
+<Plugin interface>
+	Interface "ens192"
+	IgnoreSelected false
+	ReportInactive true
 #	UniqueName false
-#</Plugin>
+</Plugin>
 
 #<Plugin ipmi>
 #	<Instance "local">
@@ -730,9 +730,9 @@ LoadPlugin network
 #	</Plugin>
 #</Plugin>
 
-#<Plugin load>
-#        ReportRelative true
-#</Plugin>
+<Plugin load>
+        ReportRelative true
+</Plugin>
 
 #<Plugin lpar>
 #	CpuPoolStats   false
@@ -796,10 +796,10 @@ LoadPlugin network
 #	</Instance>
 #</Plugin>
 
-#<Plugin memory>
-#	ValuesAbsolute true
-#	ValuesPercentage false
-#</Plugin>
+<Plugin memory>
+	ValuesAbsolute true
+	ValuesPercentage false
+</Plugin>
 
 #<Plugin modbus>
 #	<Data "data_name">
