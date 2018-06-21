@@ -20,10 +20,17 @@
     gpgkey: https://repos.influxdata.com/influxdb.key
     state: present
 
-- name: Disable HTB repository
-  command: subscription-manager repos --disable=rhel-7-server-htb-rpms
-  args:
-    warn: no
+- name: enable required repositories
+  rhsm_repository: name={{ item }}
+  with_items: "{{ required_repos }}"
+
+- name: Disable all repositories except required_repos
+  rhsm_repository:
+    name: "{{ item }}"
+    state: disabled
+  with_items: "{{ rhsm_repository.repositories |
+   map(attribute='id') |
+   difference(required_repos) }}"
 
 - name: yum-clean-metadata
   command: yum clean metadata

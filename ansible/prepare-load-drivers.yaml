@@ -6,13 +6,24 @@
     - rhsm-registered
     - monitoring
 
+  vars:
+    required_repos:
+      - rhel-7-server-rpms
+      - rhel-7-server-extras-rpms
+
   tasks:
 
    - name: enable required repositories
      rhsm_repository: name={{ item }}
-     with_items:
-       - rhel-7-server-rpms
-       - rhel-7-server-extras-rpms
+     with_items: "{{ required_repos }}"
+
+   - name: Disable all repositories except required_repos
+     rhsm_repository:
+       name: "{{ item }}"
+       state: disabled
+     with_items: "{{ rhsm_repository.repositories |
+      map(attribute='id') |
+      difference(required_repos) }}"
 
    - name: install docker and ansible dependencies
      package: name={{ item }} state=present
