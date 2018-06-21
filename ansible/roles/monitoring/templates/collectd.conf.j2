@@ -112,7 +112,7 @@ LoadPlugin cpu
 #LoadPlugin curl_xml
 #LoadPlugin dbi
 #LoadPlugin df
-#LoadPlugin disk
+LoadPlugin disk
 #LoadPlugin dns
 ##LoadPlugin dpdkevents
 ##LoadPlugin dpdkstat
@@ -522,12 +522,12 @@ LoadPlugin network
 #	ValuesPercentage false
 #</Plugin>
 
-#<Plugin disk>
-#	Disk "/^[hs]d[a-f][0-9]?$/"
-#	IgnoreSelected false
+<Plugin disk>
+	Disk "/^[vhs]d[a-f][0-9]?$/"
+	IgnoreSelected false
 #	UseBSDName false
 #	UdevNameAttr "DEVNAME"
-#</Plugin>
+</Plugin>
 
 #<Plugin dns>
 #	Interface "eth0"
