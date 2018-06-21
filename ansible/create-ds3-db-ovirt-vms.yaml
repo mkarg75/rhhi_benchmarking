@@ -1,4 +1,4 @@
-- name: Create DS2 DB oVirt VMs
+- name: Create DS3 DB oVirt VMs
   hosts: localhost
   connection: local
   gather_facts: false
@@ -8,13 +8,13 @@
     engine_url: https://rhvm.microlab/ovirt-engine/api
     engine_user: admin@internal
 
-    ds2_db_vm:
-      name: "ds2-mysql-test-{{ item }}"
-      tag: ds2_mysql_ansible_vm
+    ds3_db_vm:
+      name: "ds3-mysql-test-{{ item }}"
+      tag: ds3_mysql_ansible_vm
       profile:
         state: running
         cluster: Default
-        template: mysql-ds2-25gb-template
+        template: mysql-ds3-25gb-template
         clone: yes
         memory: 8GiB
         cores: 4
@@ -26,7 +26,7 @@
           - nic_on_boot: true
           - nic_name: eth0
           - nic_boot_protocol: static
-          - host_name: "ds2-mysql-test-{{ item }}"
+          - host_name: "ds3-mysql-test-{{ item }}"
 
   tasks:
 
@@ -40,10 +40,10 @@
           - engine_password is defined
 
     - set_fact:
-        ds2_db_vms: "{{ (ds2_db_vms | default([])) + [ds2_db_vm] }}"
+        ds3_db_vms: "{{ (ds3_db_vms | default([])) + [ds3_db_vm] }}"
       with_sequence: "start=10 count={{ how_many }}"
 
-    - name: Create DS2 DB oVirt VMs
+    - name: Create DS3 DB oVirt VMs
       include_role: name=ovirt-ansible-vm-infra
       vars:
-        vms: "{{ ds2_db_vms }}"
+        vms: "{{ ds3_db_vms }}"
