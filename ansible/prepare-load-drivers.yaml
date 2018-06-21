@@ -22,7 +22,8 @@
      rhsm_repository:
        name: "{{ item }}"
        state: disabled
-     with_items: "{{ enabled_repos.results | last | attr(repositories) |
+     with_items: "{{  enabled_repos.results |
+      map(attribute='repositories') | last |
       map(attribute='id') |
       difference(required_repos) }}"
 
