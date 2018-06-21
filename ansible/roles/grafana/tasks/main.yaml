@@ -65,7 +65,7 @@
     state: enabled
 
 - firewalld:
-    port: 25826/tcp
+    port: 25286/tcp
     permanent: true
     state: enabled
 

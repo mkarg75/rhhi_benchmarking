@@ -6,7 +6,7 @@ DROP TABLE IF EXISTS results;
 
 CREATE TABLE IF NOT EXISTS results (
   id INT(11) NOT NULL AUTO_INCREMENT,
-  test_date DATE DEFAULT NULL,
+  test_date DATETIME DEFAULT NULL,
   ds_typ VARCHAR(20) DEFAULT NULL,
   threads INT(11) DEFAULT NULL,
   nr_stacks INT(11) DEFAULT NULL,
@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS results (
   rt_purchase_avg_msec INT(11) DEFAULT NULL,
   rt_total_sampled INT(11) DEFAULT NULL,
   n_rollbacks_overall INT(11) DEFAULT NULL,
+  rt_tot_sampled INT(11) DEFAULT NULL,
   rollback_rate FLOAT(11) DEFAULT NULL,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB
