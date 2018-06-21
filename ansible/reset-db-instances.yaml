@@ -56,6 +56,9 @@
 
     - block:
 
+      - name: stop mysql service
+        service: name=mariadb state=stopped
+
       - name: mount mysql backup on /mnt
         mount:
           path: /mnt
@@ -94,7 +97,6 @@
           name: mariadb
           state: started
           enabled: yes
-
 
       always:
 
