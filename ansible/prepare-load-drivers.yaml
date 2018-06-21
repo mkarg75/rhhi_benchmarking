@@ -18,6 +18,8 @@
      with_items: "{{ required_repos }}"
      register: enabled_repos
 
+   - debug: var=enabled_repos
+
    - name: Disable all repositories except required_repos
      rhsm_repository:
        name: "{{ item }}"
