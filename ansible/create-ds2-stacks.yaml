@@ -23,7 +23,7 @@
         cores: 4
         ssh_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD36kKPUyRWFQnnwry5N/LyGgrcaeV0XN5FMpengaCx87GM36f4QWuk2+7Bk6lj2VfQJBtAUkeqHS6dOxdHoGRGe0SqJ/TTmNo2RjGFun81TSjV4rPC0gW2qbKQaKOQ1ODOB1g1jFbm2ir8AeO5O21mqxTZQ3eg49w2t0BYT0MI30JnwoGnoP0WOw8/B4kHVh9SEwQzPMRsikfvGVNLFImig8u9xMzCc5+zp34MCUzUhM/fo5SuSjQDaySuABMyCPUDYaJsyBxrhRuqonMnaElf/T8JSvPrgm4uJb4mH9fqs/4PdBWtZ2cTHYGKcuUdIGCtIzYGRh+ErTN/ccd/K1V1
         cloud_init:
-          - nic_ip_address: "172.17.0.1{{ item }}"
+          - nic_ip_address: "172.17.0.{{ item | int + 15 }}"
           - nic_gateway: 172.17.0.1
           - nic_netmask: 255.255.255.0
           - nic_on_boot: true
@@ -41,7 +41,7 @@
           - engine_url is defined
           - engine_user is defined
           - engine_password is defined
-          
+
     - ovirt_auth:
         url: "{{ engine_url }}"
         username: "{{ engine_user }}"
