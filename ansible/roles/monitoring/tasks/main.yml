@@ -57,6 +57,11 @@
     group: root
     mode: 0644
 
+- name: Unfortunately set SELinux to permissive to make collectd-iostat work
+  selinux:
+    policy: targeted
+    state: permissive
+
 - name: start and enable collectd
   service:
     name: collectd
