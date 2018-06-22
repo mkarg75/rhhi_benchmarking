@@ -35,8 +35,7 @@
 - name: Download collectd-iostat type database
   get_url:
     url: https://raw.githubusercontent.com/deniszh/collectd-iostat-python/master/iostat_types.db
-    dest: /usr/share/collectd/iostat_types.db
-    
+    dest: /usr/share/collectd/iostat_types.db    
 
 - name: Copy collectd config file
   template:
