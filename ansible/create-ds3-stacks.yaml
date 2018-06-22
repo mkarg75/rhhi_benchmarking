@@ -18,7 +18,7 @@
       profile:
         state: running
         cluster: Default
-        template: ds2-mysql-25gb-template
+        template: ds3-mysql-25gb-template
         clone: no
         memory: 8GiB
         cores: 4
