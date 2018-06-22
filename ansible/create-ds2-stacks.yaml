@@ -1,0 +1,58 @@
+- name: Create DS2 DB oVirt VMs
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    how_many: 1
+    engine_url: https://rhvm.microlab/ovirt-engine/api
+    engine_user: admin@internal
+
+    db_vm_tag: ds-mysql
+    db_ds2_vm_tag: ds2-mysql-25gb
+
+    ds2_db_vm:
+      name: "ds2-mysql-{{ item }}"
+      tag: "{{ db_ds2_vm_tag }}"
+      profile:
+        state: running
+        cluster: Default
+        template: ds2-mysql-25gb-template
+        clone: no
+        memory: 8GiB
+        cores: 4
+        ssh_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD36kKPUyRWFQnnwry5N/LyGgrcaeV0XN5FMpengaCx87GM36f4QWuk2+7Bk6lj2VfQJBtAUkeqHS6dOxdHoGRGe0SqJ/TTmNo2RjGFun81TSjV4rPC0gW2qbKQaKOQ1ODOB1g1jFbm2ir8AeO5O21mqxTZQ3eg49w2t0BYT0MI30JnwoGnoP0WOw8/B4kHVh9SEwQzPMRsikfvGVNLFImig8u9xMzCc5+zp34MCUzUhM/fo5SuSjQDaySuABMyCPUDYaJsyBxrhRuqonMnaElf/T8JSvPrgm4uJb4mH9fqs/4PdBWtZ2cTHYGKcuUdIGCtIzYGRh+ErTN/ccd/K1V1
+        cloud_init:
+          - nic_ip_address: "172.17.0.1{{ item }}"
+          - nic_gateway: 172.17.0.1
+          - nic_netmask: 255.255.255.0
+          - nic_on_boot: true
+          - nic_name: eth0
+          - nic_boot_protocol: static
+          - host_name: "ds2-mysql-{{ item }}"
+
+  tasks:
+
+    - include_vars: credentials/ovirt-credentials.yaml
+
+    - assert:
+        that:
+          - how_many is defined
+          - engine_url is defined
+          - engine_user is defined
+          - engine_password is defined
+
+    - set_fact:
+        ds2_db_vms: "{{ (ds2_db_vms | default([])) + [ds2_db_vm] }}"
+      with_sequence: "start=10 count={{ how_many }}"
+
+    - name: Create DS2 DB oVirt VMs
+      include_role: name=ovirt-ansible-vm-infra
+      vars:
+        vms: "{{ ds2_db_vms }}"
+
+    - name: Tag DS2 database VMs with {{ db_vm_tag }}
+      ovirt_tags:
+        auth: "{{ ovirt_auth }}"
+        name: "{{ db_vm_tag }}"
+        vms: "{{ ds2_db_vms | map(attribute='name') | list }}"
