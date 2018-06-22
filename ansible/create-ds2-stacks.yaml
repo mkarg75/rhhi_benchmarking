@@ -41,6 +41,11 @@
           - engine_url is defined
           - engine_user is defined
           - engine_password is defined
+          
+    - ovirt_auth:
+        url: "{{ engine_url }}"
+        username: "{{ engine_user }}"
+        password: "{{ engine_password }}"
 
     - set_fact:
         ds2_db_vms: "{{ (ds2_db_vms | default([])) + [ds2_db_vm] }}"
