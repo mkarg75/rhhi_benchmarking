@@ -11,18 +11,32 @@
   rhsm_repository:
     name: rhel-7-server-rpms
 
-
-- name: yum-clean-metadata
-  command: yum clean metadata
-  args:
-    warn: no
-
 - name: Install collectd and required plugins
   yum:
     name: "{{ item }}"
     state: present
   with_items:
     - collectd
+
+
+- name: Create collectd python plugin directory
+  file:
+    path: /usr/lib64/collectd/plugins/python
+    state: directory
+    owner: root
+    group: root
+
+- name: Download collectd-iostat plugin
+  get_url:
+    url: https://raw.githubusercontent.com/deniszh/collectd-iostat-python/master/collectd_iostat_python.py
+    dest: /usr/lib64/collectd/plugins/python/collectd_iostat_python.py
+    mode: 0755
+
+- name: Download collectd-iostat type database
+  get_url:
+    url: https://raw.githubusercontent.com/deniszh/collectd-iostat-python/master/iostat_types.db
+    dest: /usr/share/collectd/iostat_types.db
+    
 
 - name: Copy collectd config file
   template:

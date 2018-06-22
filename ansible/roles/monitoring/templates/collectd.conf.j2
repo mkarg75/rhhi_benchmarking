@@ -1218,16 +1218,23 @@ LoadPlugin network
 #	IgnoreSelected false
 #</Plugin>
 
-#<Plugin python>
-#	ModulePath "/path/to/your/python/modules"
-#	LogTraces true
-#	Interactive true
-#	Import "spam"
-#
-#	<Module spam>
-#		spam "wonderful" "lovely"
-#	</Module>
-#</Plugin>
+<LoadPlugin python>
+    Globals true
+</LoadPlugin>
+
+<Plugin python>
+    ModulePath "/usr/lib/collectd/plugins/python"
+    Import "collectd_iostat_python"
+
+    <Module collectd_iostat_python>
+        Path "/usr/bin/iostat"
+        Interval 2
+        Count 2
+        Verbose false
+        NiceNames false
+        PluginName collectd_iostat_python
+    </Module>
+</Plugin>
 
 #<Plugin redis>
 #   <Node example>
