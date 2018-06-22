@@ -8,8 +8,16 @@
     gpgcheck: yes
 
 - name: enable required repositories
+  rhsm_repository: name={{ required_repos | join(',') }}
+  register: enabled_repos
+
+- name: Disable all repositories except required_repos
   rhsm_repository:
-    name: rhel-7-server-rpms
+    name: "{{ enabled_repos.repositories |
+     map(attribute='id') |
+     difference(required_repos) |
+     join(',' ) }}"
+    state: disabled
 
 - name: Install collectd and required plugins
   yum:
@@ -18,6 +26,10 @@
   with_items:
     - collectd
 
+- name: Install iostat
+  package:
+    name: sysstat
+    state: present
 
 - name: Create collectd python plugin directory
   file:
@@ -35,7 +47,7 @@
 - name: Download collectd-iostat type database
   get_url:
     url: https://raw.githubusercontent.com/deniszh/collectd-iostat-python/master/iostat_types.db
-    dest: /usr/share/collectd/iostat_types.db    
+    dest: /usr/share/collectd/iostat_types.db
 
 - name: Copy collectd config file
   template:
