@@ -2,7 +2,7 @@
 
 # script to run the benchmarks against ds2 / ds3 stacks mostly automatically
 # call logic:
-# ./run_bench.py --stacks <number_of_stacks> --ds2 <number_of_ds2_containers> --ds3 <nr_of_ds3_containers> --threads <number_of_threads>
+# ./run_bench.py --stacks <number_of_stacks> --ds2 <number_of_ds2_containers> --ds3 <nr_of_ds3_containers> --threads <number_of_threads># -id <identifier>
 # The containers will run with a consecutively increasing number which will be used to identify their specific DriverConfig.txt file
 # container 0 will use  DriverConfig.txt.0 to map it into the container etc. 
 
@@ -89,9 +89,9 @@ def updatedb(result, typ, conn, stacks, threads, uid):
     #print "Entering data into mysql"
     try:
         x.execute("""INSERT INTO results \
-                 (uuid, test_date, threads, nr_stacks, et, n_overall, ds_typ, opm, rt_tot_lastn_max, rt_tot_avg, n_login_overall, n_newcust_overall, n_browse_overall, rt_login_avg_msec, rt_newcust_avg_msec, rt_browse_avg_msec, rt_purchase_avg_msec, n_purchase_overall,  rt_tot_sampled, n_rollbacks_overall, rollback_rate) VALUES \                 
-                 (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""", \
-                 (uid, test_date, threads, stacks, et, n_overall, typ, opm, rt_tot_lastn_max, rt_tot_avg, n_login_overall, n_newcust_overall, n_browse_overall, rt_login_avg_msec, rt_newcust_avg_msec, rt_browse_avg_msec, rt_purchase_avg_msec, n_purchase_overall, rt_tot_sampled, n_rollbacks_overall, rollback_rate))                                 
+                 (id, uuid, test_date, threads, nr_stacks, et, n_overall, ds_typ, opm, rt_tot_lastn_max, rt_tot_avg, n_login_overall, n_newcust_overall, n_browse_overall, rt_login_avg_msec, rt_newcust_avg_msec, rt_browse_avg_msec, rt_purchase_avg_msec, n_purchase_overall,  rt_tot_sampled, n_rollbacks_overall, rollback_rate) VALUES \                 
+                 (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""", \
+                 (idstring, uid, test_date, threads, stacks, et, n_overall, typ, opm, rt_tot_lastn_max, rt_tot_avg, n_login_overall, n_newcust_overall, n_browse_overall, rt_login_avg_msec, rt_newcust_avg_msec, rt_browse_avg_msec, rt_purchase_avg_msec, n_purchase_overall, rt_tot_sampled, n_rollbacks_overall, rollback_rate))                                 
         conn.commit()
         print "DB commit successful"
     except MySQLdb.Error as e:
@@ -104,6 +104,7 @@ def main(argv):
     ds2 = 0
     ds3 = 0
     threads = '0'
+    idstring = ''
 
     try:
         opts, args = getopt.getopt(argv,"hs:d:e:t",["stacks=","ds2=","ds3=","threads="])
@@ -128,6 +129,12 @@ def main(argv):
             if threads == 0:
                 print "No thread number given, exiting."
                 sys.exit(1)
+        elif opt in ("-i" "--id"):
+            idstring = arg
+            if idstring == '':
+                print "No identification string given, exiting"
+                sys.exit(1)
+
 
 
     # Set up the DB connection
@@ -177,7 +184,7 @@ if __name__ == "__main__":
    try:
       arg = sys.argv[1]
    except IndexError:
-      print "Usage: run_bench.py -s <stacks> -d <ds2_instances> -e <ds3_instances> -t <threads>"
+      print "Usage: run_bench.py -s <stacks> -d <ds2_instances> -e <ds3_instances> -t <threads> -i <id_string>"
       sys.exit()
 
    main(sys.argv[1:])
