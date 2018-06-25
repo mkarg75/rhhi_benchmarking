@@ -116,12 +116,19 @@ def main(argv):
             sys.exit()
         elif opt in ("-s", "--stacks"):
             stacks = arg
+            if stacks == 0:
+                print "No stack number given, exiting."
+                sys.exit(1)
         elif opt in ("-d", "--ds2"):
             ds2 = arg
         elif opt in ("-e", "--ds3"):
             ds3 = arg
         elif opt in ("-t", "--threads"):
             threads = arg
+            if threads == 0:
+                print "No thread number given, exiting."
+                sys.exit(1)
+
 
     # Set up the DB connection
     try:
@@ -136,10 +143,10 @@ def main(argv):
 
     uid = str(uuid.uuid4())
     # run the docker instance(s) and collect the output 
-    for i in range(0, 3):
+    for i in range(0, ds2):
         print "Starting ds2 container number ", i
         ds2_subp(i)
-    for j in range (0, int(ds3)):
+    for j in range (0, ds3):
         print "Starting ds3 container number ", j
         ds3_subp(j)
 
