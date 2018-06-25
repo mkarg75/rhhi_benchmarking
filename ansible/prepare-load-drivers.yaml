@@ -42,3 +42,38 @@
      with_items:
         - dmesser/ds2mysqldriver
         - dmesser/ds3webdriver
+
+   - name: install python dependencies
+     package: name={{ item }} state=present
+     with_items:
+       - MySQL-python
+
+   - name: copy the benchmark script
+     copy: 
+        src: files/run_bench.py
+        dest: /root/
+        owner: root
+        group: root
+        mode: 0755
+
+   - name: create config files for the containers
+     file: path=/root/ds2mysqldriver state=directory
+     file: path=/root/ds3mysqldriver state=directory
+
+     template: 
+         src: templates/DriverConfig.txt.j2
+         dest: /root/ds2mysqldriver/DriverConfig.txt.{{ item }}
+         owner: root
+         group: root
+         mode: 0644
+     with_sequence:
+         start: 0 end: 253
+
+     template: 
+         src: templates/DriverConfig.txt.j2
+         dest: /root/ds3mysqldriver/DriverConfig.txt.{{ item }}
+         owner: root
+         group: root
+         mode: 0644
+     with_sequence:
+         start: 0 end: 253

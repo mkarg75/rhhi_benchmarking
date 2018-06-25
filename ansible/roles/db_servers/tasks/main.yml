@@ -15,10 +15,14 @@
     insertafter: '\[mysqld\]'
     line: 'performance_schema=ON'
 
-- name: Install collectd-dbi
+- name: Install collectd requirements
   yum:
-    name: collectd-dbi
+    name: {{ item }}
     state: present
+  with_items:
+    - collectd-dbi
+    - libdbi
+    - libdbi-dbd-mysql
 
 - name: Start and enable mariadb-server
   systemd:
@@ -35,6 +39,14 @@
     state: present
     login_user: root
 
+- name: Add the dbi config file for mysql monitoring
+  copy:
+    src: files/dbi.conf
+    dest: /etc/collectd.d/dbi.conf
+    owner: root
+    group: root
+    mode: 0644
+
 # TODO: disable all the metrics in the performance DB we're not using
 
 - name: Open mariadb firewall ports
@@ -42,8 +54,3 @@
     service: mysql
     permanent: true
     state: enabled
-    
-
-
-
-
