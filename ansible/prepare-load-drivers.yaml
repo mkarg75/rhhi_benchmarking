@@ -49,7 +49,7 @@
        - MySQL-python
 
    - name: copy the benchmark script
-     copy: 
+     copy:
         src: files/run_bench.py
         dest: /root/
         owner: root
@@ -60,16 +60,17 @@
      file: path=/root/ds2mysqldriver state=directory
      file: path=/root/ds3mysqldriver state=directory
 
-     template: 
+     template:
          src: templates/DriverConfig.txt.j2
          dest: /root/ds2mysqldriver/DriverConfig.txt.{{ item }}
          owner: root
          group: root
          mode: 0644
      with_sequence:
-         start: 0 end: 253
+         start: 0
+         end: 253
 
-     template: 
+     template:
          src: templates/DriverConfig.txt.j2
          dest: /root/ds3mysqldriver/DriverConfig.txt.{{ item }}
          owner: root
