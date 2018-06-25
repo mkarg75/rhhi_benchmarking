@@ -62,8 +62,8 @@
     policy: targeted
     state: permissive
 
-- name: start and enable collectd
+- name: (re)start and enable collectd
   service:
     name: collectd
-    state: started
+    state: restarted
     enabled: yes
