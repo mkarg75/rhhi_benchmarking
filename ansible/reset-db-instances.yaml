@@ -7,7 +7,7 @@
     engine_url: https://rhvm.microlab/ovirt-engine/api
     engine_user: admin@internal
 
-    db_vm_tag: ds2_mysql_ansible_vm
+    db_vm_tag: ds-mysql
 
   tasks:
     - include_vars: credentials/ovirt-credentials.yaml
@@ -29,7 +29,7 @@
         pattern: "tag={{ db_vm_tag }}"
       register: ds2_vms
 
-    - name: Get DB VM NICs by tag
+    - name: Get DB VM NICs
       ovirt_nics_facts:
         auth: "{{ ovirt_auth }}"
         vm: "{{ item }}"
@@ -97,6 +97,14 @@
           name: mariadb
           state: started
           enabled: yes
+
+      - name: create the benchmark user web
+        mysql_user:
+          name: web
+          host_all: yes
+          password: web
+          priv: '*.*:ALL'
+          state: present
 
       always:
 
