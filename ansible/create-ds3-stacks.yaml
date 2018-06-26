@@ -93,9 +93,3 @@
       include_role: name=ovirt-ansible-vm-infra
       vars:
         vms: "{{ ds3_web_vms }}"
-
-    - name: Tag DS3 web VMs with {{ db_web_tag }}
-      ovirt_tags:
-        auth: "{{ ovirt_auth }}"
-        name: "{{ db_vm_tag }}"
-        vms: "{{ ds3_web_vms | map(attribute='name') | list }}"
