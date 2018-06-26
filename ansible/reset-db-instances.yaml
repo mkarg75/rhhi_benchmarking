@@ -79,7 +79,7 @@
 
       - name: start rsync job to restore database from backup
         shell: rsync -aq /mnt/ /var/lib/mysql
-        async: 3600
+        async: 7200
         poll: 30
 
       - name: ensure correct ownership of database directory
