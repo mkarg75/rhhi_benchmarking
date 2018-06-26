@@ -2,7 +2,7 @@
 
 # script to run the benchmarks against ds2 / ds3 stacks mostly automatically
 # call logic:
-# ./run_bench.py --stacks <number_of_stacks> --ds2 <number_of_ds2_containers> --ds3 <nr_of_ds3_containers> --threads <number_of_threads># -id <identifier>
+# ./run_bench.py --stacks <number_of_stacks> --ds2 <number_of_ds2_containers> --ds3 <nr_of_ds3_containers> -id <identifier>
 # The containers will run with a consecutively increasing number which will be used to identify their specific DriverConfig.txt file
 # container 0 will use  DriverConfig.txt.0 to map it into the container etc. 
 
@@ -20,7 +20,22 @@ import uuid
 import socket
 
 hostname = socket.getfqdn()
-testdict = dict()
+processes = dict()
+
+def get_threads():
+    # we can rely on DriverConfig.txt.0 to be there since we need to run at least one container
+    # if it is not, we bail out
+    try:
+        fh = open("DriverConfig.txt.0")
+    except: 
+        print "Unable to open DriverConfig.txt.0, exiting"
+        sys.exit(1)
+
+    for line in fh:
+        if "n_threads" in line: 
+            threads = (line.split("="))[1]
+    fh.close
+    return threads
 
 def myconverter(o):
     if isinstance(o, datetime.datetime):
@@ -30,7 +45,7 @@ def ds2_subp(counter):
      typ = "ds2"
      cmd = 'docker run -t -v $(pwd)/DriverConfig.txt.' + str(counter) + ':/opt/app-root/app/driver_config.ini:Z dmesser/ds2mysqldriver:latest'
      proc = (subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE))
-     testdict[proc] = typ
+     processes[proc] = typ
 
 def ds3_supb(counter):
      typ = "ds3"
@@ -100,22 +115,25 @@ def updatedb(result, typ, conn, stacks, threads, uid):
         print "Error: ", e
         conn.rollback()
 
+
+
+
 def main(argv):
 
     stacks = '0'
     ds2 = 0
     ds3 = 0
-    threads = '0'
     idstring = ''
 
     try:
-        opts, args = getopt.getopt(argv,"hs:d:e:t",["stacks=","ds2=","ds3=","threads="])
+        opts, args = getopt.getopt(argv,"hs:d:e:i:",["stacks=","ds2=","ds3=","id="])
     except getopt.GetoptError:
-        print 'run_bench.py -s <stacks> -d <ds2_instances> -e <ds3_instances> -t <threads>'
+        print 'getopt_error: run_bench.py -s <stacks> -d <ds2_instances> -e <ds3_instances> -i <idstring>'
         sys.exit(2)
+    # validating command line options
     for opt, arg in opts:
         if opt in ("-h", "--help"):
-            print 'run_bench.py -s <stacks> -d <ds2_instances> -e <ds3_instances> -t <threads>'
+            print 'run_bench.py -s <stacks> -d <ds2_instances> -e <ds3_instances> -i <idstring>'
             sys.exit()
         elif opt in ("-s", "--stacks"):
             stacks = arg
@@ -126,10 +144,8 @@ def main(argv):
             ds2 = arg
         elif opt in ("-e", "--ds3"):
             ds3 = arg
-        elif opt in ("-t", "--threads"):
-            threads = arg
-            if threads == 0:
-                print "No thread number given, exiting."
+            if (ds2 == 0 and ds3 ==0):
+                print "At least one ds2 or ds3 container need to run and both are set to 0, exiting"
                 sys.exit(1)
         elif opt in ("-i" "--id"):
             idstring = arg
@@ -137,7 +153,9 @@ def main(argv):
                 print "No identification string given, exiting"
                 sys.exit(1)
 
+    # get the number of threads
 
+    threads = get_threads()
 
     # Set up the DB connection
     try:
@@ -159,11 +177,11 @@ def main(argv):
         print "Starting ds3 container number ", j
         ds3_subp(j)
 
-    for key in testdict:
-        #print key, testdict[key]
+    for key in processes:
+        #print key, processes[key]
         key.wait()
         result = (key.communicate())[0]
-        typ = (testdict[key])
+        typ = (processes[key])
         updatedb(result, typ, conn, stacks, threads, uid)
 
     print "All docker instances finished"
@@ -186,7 +204,7 @@ if __name__ == "__main__":
    try:
       arg = sys.argv[1]
    except IndexError:
-      print "Usage: run_bench.py -s <stacks> -d <ds2_instances> -e <ds3_instances> -t <threads> -i <id_string>"
+      print "Usage: run_bench.py -s <stacks> -d <ds2_instances> -e <ds3_instances> -i <id_string>"
       sys.exit()
 
    main(sys.argv[1:])
