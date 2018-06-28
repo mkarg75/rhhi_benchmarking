@@ -21,6 +21,7 @@ import socket
 
 hostname = socket.getfqdn()
 processes = dict()
+c_counter = 0 # containercounter
 
 def get_threads():
     # we can rely on DriverConfig.txt.0 to be there since we need to run at least one container
@@ -43,15 +44,17 @@ def myconverter(o):
 
 def ds2_subp(counter):
      typ = "ds2"
-     cmd = 'docker run -t -v $(pwd)/DriverConfig.txt.' + str(counter) + ':/opt/app-root/app/driver_config.ini:Z dmesser/ds2mysqldriver:latest'
+     cmd = 'docker run -t -v /root/dsmysqldriver/DriverConfig.txt.' + str(c_counter) + ':/opt/app-root/app/driver_config.ini:Z dmesser/ds2mysqldriver:latest'
      proc = (subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE))
      processes[proc] = typ
+     c_counter += 1
 
 def ds3_supb(counter):
      typ = "ds3"
-     cmd = 'docker run -t -v $(pwd)/DriverConfig.txt.' + str(counter) + ':/opt/app-root/app/driver_config.ini:Z dmesser/ds3mysqldriver:latest'
+     cmd = 'docker run -t -v /root/dsmysqldriver/DriverConfig.txt.' + str(c_counter) + ':/opt/app-root/app/driver_config.ini:Z dmesser/ds3mysqldriver:latest'
      proc = (subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE))
      testdic['proc'] = typ
+     c_counter += 1
 
 def updatedb(result, typ, conn, stacks, threads, uid):
     #print "Running updatedb"
