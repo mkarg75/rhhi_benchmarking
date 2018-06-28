@@ -56,13 +56,10 @@
         group: root
         mode: 0755
 
-   - name: create config files for the containers
+   - name: create the directory for the config files
      file: path=/root/dsmysqldriver state=directory
-     #file: path=/root/ds3mysqldriver state=directory
 
-- hosts: load1.poc4.maxta.com
-  tasks:
-
+   - name: create config files for the containers
      template:
          src: templates/DriverConfig.txt.j2
          dest: /root/ds2mysqldriver/DriverConfig.txt.{{ item.0 }}
