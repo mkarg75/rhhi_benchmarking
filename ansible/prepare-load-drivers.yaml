@@ -60,9 +60,6 @@
      file: path=/root/dsmysqldriver state=directory
      #file: path=/root/ds3mysqldriver state=directory
 
-- hosts: load-1.poc4.maxta.com
-  tasks:
-
      template: 
          src: templates/DriverConfig.txt.j2
          dest: /root/ds2mysqldriver/DriverConfig.txt.{{ item.0 }}
@@ -72,13 +69,3 @@
      #with_sequence:
          #start: 0 end: 253 stride: 4
      loop: "{{ range(0,50,1)|list|zip(range(0,150,3))|list }}"
-
-- hosts: load-2.poc4.maxta.com
-  tasks:
-      template:
-          src: templates/DriverConfig.txt.j2
-          dest: /root/ds2mysqldriver/Driverconfig.txt.{{ item.0 }}
-          owner: root
-          group: root
-          mode: 0644
-      loop: "{{ range(0,50,1)|list|zip(range(1,153,3))|list }}"
