@@ -42,14 +42,16 @@ def myconverter(o):
     if isinstance(o, datetime.datetime):
         return o.__str__()
 
-def ds2_subp(counter):
+def ds2_subp():
+     global c_counter
      typ = "ds2"
      cmd = 'docker run -t -v /root/dsmysqldriver/DriverConfig.txt.' + str(c_counter) + ':/opt/app-root/app/driver_config.ini:Z dmesser/ds2mysqldriver:latest'
      proc = (subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE))
      processes[proc] = typ
      c_counter += 1
 
-def ds3_supb(counter):
+def ds3_supb():
+     global c_counter
      typ = "ds3"
      cmd = 'docker run -t -v /root/dsmysqldriver/DriverConfig.txt.' + str(c_counter) + ':/opt/app-root/app/driver_config.ini:Z dmesser/ds3mysqldriver:latest'
      proc = (subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE))
@@ -173,12 +175,12 @@ def main(argv):
 
     uid = str(uuid.uuid4())
     # run the docker instance(s) and collect the output 
-    for i in range(0, ds2):
+    for i in range(0, int(ds2)):
         print "Starting ds2 container number ", i
-        ds2_subp(i)
-    for j in range (0, ds3):
+        ds2_subp()
+    for j in range (0, int(ds3)):
         print "Starting ds3 container number ", j
-        ds3_subp(j)
+        ds3_subp()
 
     for key in processes:
         #print key, processes[key]
