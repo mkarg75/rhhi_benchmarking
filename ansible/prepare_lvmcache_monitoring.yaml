@@ -1,0 +1,21 @@
+---
+- hosts: ds_nodes
+  
+  tasks:
+
+    - name: copy the collecting script 
+      copy: 
+        src: files/collectd-lvmcache
+        dest: /usr/local/sbin/collectd-lvmcache
+        owner: root
+        group: root
+        mode: 0755
+
+    - name: setup the collectd plugin
+      copy: 
+        src: files/lvcache.conf
+        dest: /etc/collectd.d/lvcache.conf
+        owner: root
+        group: root
+        mode: 0644
+
