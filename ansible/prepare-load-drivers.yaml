@@ -62,7 +62,7 @@
    - name: create config files for the containers
      template:
          src: templates/DriverConfig.txt.j2
-         dest: /root/ds2mysqldriver/DriverConfig.txt.{{ item.0 | str }}
+         dest: "/root/ds2mysqldriver/DriverConfig.txt.{{ item.0 }}"
          owner: root
          group: root
          mode: 0644
