@@ -60,6 +60,7 @@
      file: path=/root/dsmysqldriver state=directory
      #file: path=/root/ds3mysqldriver state=directory
 
+   - name: create ds configuration files
      template: 
          src: templates/DriverConfig.txt.j2
          dest: /root/ds2mysqldriver/DriverConfig.txt.{{ item.0 }}
