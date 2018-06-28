@@ -62,10 +62,10 @@
    - name: create config files for the containers
      debug:
        msg: "{{ item.0 }} - {{ item.1 }}"
-     #template:
-     #    src: templates/DriverConfig.txt.j2
-     #    dest: /root/ds2mysqldriver/DriverConfig.txt.{{ item.0 }}
-     #    owner: root
-     #    group: root
-     #    mode: 0644
+     template:
+         src: templates/DriverConfig.txt.j2
+         dest: /root/ds2mysqldriver/DriverConfig.txt.{{ item.0 }}
+         owner: root
+         group: root
+         mode: 0644
      loop: "{{ range(0,50,1)|list|zip(range(0,150,3))|list }}"
