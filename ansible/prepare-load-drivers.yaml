@@ -59,6 +59,10 @@
    - name: create the directory for the config files
      file: path=/root/dsmysqldriver state=directory
 
+- hosts: load-1.poc4.maxta.com
+
+  tasks:
+   
    - name: create config files for the containers
      template:
          src: templates/DriverConfig.txt.j2
@@ -67,3 +71,4 @@
          group: root
          mode: 0644
      loop: "{{ range(0,50,1)|list|zip(range(0,150,3))|list }}"
+
