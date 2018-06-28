@@ -191,7 +191,7 @@ LoadPlugin network
 #LoadPlugin snmp
 #LoadPlugin snmp_agent
 #LoadPlugin statsd
-#LoadPlugin swap
+LoadPlugin swap
 #LoadPlugin table
 #LoadPlugin tail
 #LoadPlugin tail_csv
@@ -363,7 +363,7 @@ LoadPlugin network
 <Plugin cpu>
   ReportByCpu true
   ReportByState true
-  ValuesPercentage false
+  ValuesPercentage true
   ReportNumCpu false
   ReportGuestState false
   SubtractGuestState true
@@ -1218,16 +1218,23 @@ LoadPlugin network
 #	IgnoreSelected false
 #</Plugin>
 
-#<Plugin python>
-#	ModulePath "/path/to/your/python/modules"
-#	LogTraces true
-#	Interactive true
-#	Import "spam"
-#
-#	<Module spam>
-#		spam "wonderful" "lovely"
-#	</Module>
-#</Plugin>
+<LoadPlugin python>
+    Globals true
+</LoadPlugin>
+
+<Plugin python>
+    ModulePath "/usr/lib64/collectd/plugins/python"
+    Import "collectd_iostat_python"
+
+    <Module collectd_iostat_python>
+        Path "/usr/bin/iostat"
+        Interval 3
+        Count 2
+        Verbose false
+        NiceNames false
+        PluginName collectd_iostat_python
+    </Module>
+</Plugin>
 
 #<Plugin redis>
 #   <Node example>
@@ -1381,13 +1388,13 @@ LoadPlugin network
 #  TimerCount     false
 #</Plugin>
 
-#<Plugin swap>
-#	ReportByDevice false
-#	ReportBytes true
-#	ValuesAbsolute true
+<Plugin swap>
+ReportByDevice false
+ReportBytes true
+ValuesAbsolute true
 #	ValuesPercentage false
-#	ReportIO true
-#</Plugin>
+ReportIO true
+</Plugin>
 
 #<Plugin table>
 #	<Table "/proc/slabinfo">

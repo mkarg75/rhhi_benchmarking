@@ -7,7 +7,7 @@
     engine_url: https://rhvm.microlab/ovirt-engine/api
     engine_user: admin@internal
 
-    db_vm_tag: ds2_mysql_ansible_vm
+    db_vm_tag: ds-mysql
 
   tasks:
     - include_vars: credentials/ovirt-credentials.yaml
@@ -27,17 +27,17 @@
       ovirt_vms_facts:
         auth: "{{ ovirt_auth }}"
         pattern: "tag={{ db_vm_tag }}"
-      register: ds2_vms
+      register: db_vms
 
-    - name: Get DB VM NICs by tag
+    - name: Get DB VM NICs
       ovirt_nics_facts:
         auth: "{{ ovirt_auth }}"
         vm: "{{ item }}"
-      register: ds2_nics
-      loop: "{{ ds2_vms.ansible_facts.ovirt_vms|json_query('[*].name') }}"
+      register: dsb_nics
+      loop: "{{ db_vms.ansible_facts.ovirt_vms|json_query('[*].name') }}"
 
     - set_fact:
-        db_ips: "{{ ds2_nics.results|json_query('[].ansible_facts.ovirt_nics[].reported_devices[].ips[?version==`v4`].address | []') }}"
+        db_ips: "{{ dsb_nics.results|json_query('[].ansible_facts.ovirt_nics[].reported_devices[].ips[?version==`v4`].address | []') }}"
 
     - name: add DBs to inventory
       add_host:
@@ -79,7 +79,7 @@
 
       - name: start rsync job to restore database from backup
         shell: rsync -aq /mnt/ /var/lib/mysql
-        async: 3600
+        async: 7200
         poll: 30
 
       - name: ensure correct ownership of database directory
@@ -97,6 +97,14 @@
           name: mariadb
           state: started
           enabled: yes
+
+      - name: create the benchmark user web
+        mysql_user:
+          name: web
+          host_all: yes
+          password: web
+          priv: '*.*:ALL'
+          state: present
 
       always:
 

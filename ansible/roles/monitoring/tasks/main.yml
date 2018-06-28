@@ -8,14 +8,16 @@
     gpgcheck: yes
 
 - name: enable required repositories
+  rhsm_repository: name={{ required_repos | join(',') }}
+  register: enabled_repos
+
+- name: Disable all repositories except required_repos
   rhsm_repository:
-    name: rhel-7-server-rpms
-
-
-- name: yum-clean-metadata
-  command: yum clean metadata
-  args:
-    warn: no
+    name: "{{ enabled_repos.repositories |
+     map(attribute='id') |
+     difference(required_repos) |
+     join(',' ) }}"
+    state: disabled
 
 - name: Install collectd and required plugins
   yum:
@@ -23,6 +25,29 @@
     state: present
   with_items:
     - collectd
+
+- name: Install iostat
+  package:
+    name: sysstat
+    state: present
+
+- name: Create collectd python plugin directory
+  file:
+    path: /usr/lib64/collectd/plugins/python
+    state: directory
+    owner: root
+    group: root
+
+- name: Download collectd-iostat plugin
+  get_url:
+    url: https://raw.githubusercontent.com/deniszh/collectd-iostat-python/master/collectd_iostat_python.py
+    dest: /usr/lib64/collectd/plugins/python/collectd_iostat_python.py
+    mode: 0755
+
+- name: Download collectd-iostat type database
+  get_url:
+    url: https://raw.githubusercontent.com/deniszh/collectd-iostat-python/master/iostat_types.db
+    dest: /usr/share/collectd/iostat_types.db
 
 - name: Copy collectd config file
   template:
@@ -32,8 +57,13 @@
     group: root
     mode: 0644
 
-- name: start and enable collectd
+- name: Unfortunately set SELinux to permissive to make collectd-iostat work
+  selinux:
+    policy: targeted
+    state: permissive
+
+- name: (re)start and enable collectd
   service:
     name: collectd
-    state: started
+    state: restarted
     enabled: yes
