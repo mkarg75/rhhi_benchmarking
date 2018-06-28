@@ -60,7 +60,7 @@
      file: path=/root/dsmysqldriver state=directory
      #file: path=/root/ds3mysqldriver state=directory
 
-- hosts: load1.poc4.maxta.com
+- hosts: load-1.poc4.maxta.com
   tasks:
 
      template: 
@@ -73,7 +73,7 @@
          #start: 0 end: 253 stride: 4
      loop: "{{ range(0,50,1)|list|zip(range(0,150,3))|list }}"
 
-- hosts: load2.poc4.maxta.com
+- hosts: load-2.poc4.maxta.com
   tasks:
       template:
           src: templates/DriverConfig.txt.j2
