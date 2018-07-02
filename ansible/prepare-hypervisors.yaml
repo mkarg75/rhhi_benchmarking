@@ -4,7 +4,7 @@
 
   roles:
     - rhsm-registered
-    - monitoring
+    - { role: monitoring, enable_rh_repos: false }
 
   vars:
     required_repos:

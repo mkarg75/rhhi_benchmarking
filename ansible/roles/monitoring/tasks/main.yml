@@ -7,17 +7,21 @@
     gpgkey: https://archive.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7
     gpgcheck: yes
 
-- name: enable required repositories
-  rhsm_repository: name={{ required_repos | join(',') }}
-  register: enabled_repos
+- block:
+  - name: enable required repositories
+    rhsm_repository: name={{ required_repos | join(',') }}
+    register: enabled_repos
 
-- name: Disable all repositories except required_repos
-  rhsm_repository:
-    name: "{{ enabled_repos.repositories |
-     map(attribute='id') |
-     difference(required_repos) |
-     join(',' ) }}"
-    state: disabled
+  - name: Disable all repositories except required_repos
+    rhsm_repository:
+      name: "{{ enabled_repos.repositories |
+       map(attribute='id') |
+       difference(required_repos) |
+       join(',' ) }}"
+      state: disabled
+  when:
+    - enable_rh_repos is defined
+    - enable_rh_repos
 
 - name: Install collectd and required plugins
   yum:
@@ -64,7 +68,7 @@
     owner: root
     group: root
     mode: 0644
-    
+
 - name: Download collectd network bandwith usage plugin
   get_url:
     url: https://raw.githubusercontent.com/Cosmologist/collectd-network-bandwidth-usage/master/exec-network-bandwidth-usage.sh
