@@ -29,7 +29,7 @@
       yum_repository:
         name: centos-opstools
         description: CentOS OpsTools
-        baseurl: http://mirror.centos.org/centos/$releasever/opstools/$basearch/
+        baseurl: http://mirror.centos.org/centos/7/opstools/$basearch/
 
     - name: update collectd
       yum:
