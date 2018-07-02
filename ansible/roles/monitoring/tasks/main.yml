@@ -56,6 +56,20 @@
     owner: root
     group: root
     mode: 0644
+    
+- name: Download collectd network bandwith usage plugin
+  get_url:
+    url: https://github.com/Cosmologist/collectd-network-bandwidth-usage/blob/master/exec-network-bandwidth-usage.sh
+    dest: /usr/lib64/collectd/plugins/python/exec-network-bandwith-usage.sh
+    mode: 0755
+
+- name: Copy collectd config file
+  template:
+    src: network-bandwith-usage.conf.j2
+    dest: /etc/collectd.d/network-bandwith-usage.conf
+    owner: root
+    group: root
+    mode: 0644
 
 - name: Unfortunately set SELinux to permissive to make collectd-iostat work
   selinux:
