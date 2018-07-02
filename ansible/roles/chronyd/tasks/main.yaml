@@ -1,0 +1,22 @@
+- name: enable required rhsm repositories
+  rhsm_repository: name={{ required_repos | join(',') }}
+  register: enabled_repos
+
+- name: Disable all rhsm repositories except required_repos
+  rhsm_repository:
+    name: "{{ enabled_repos.repositories |
+     map(attribute='id') |
+     difference(required_repos) |
+     join(',' ) }}"
+    state: disabled
+
+- name: install chronyd
+  yum:
+    name: chrony
+    state: present
+
+- name: start and enable chronyd
+  service:
+    name: chronyd
+    state: started
+    enabled: yes

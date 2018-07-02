@@ -13,6 +13,10 @@
       include_role:
         name: rhsm-registered
 
+    - name: apply chronyd role
+      include_role:
+        name: chronyd
+
     - name: enable required rhsm repositories
       rhsm_repository: name={{ required_repos | join(',') }}
       register: enabled_repos
