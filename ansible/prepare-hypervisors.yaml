@@ -30,6 +30,7 @@
         name: centos-opstools
         description: CentOS OpsTools
         baseurl: http://mirror.centos.org/centos/7/opstools/$basearch/
+        gpgcheck: no
 
     - name: update collectd
       yum:
