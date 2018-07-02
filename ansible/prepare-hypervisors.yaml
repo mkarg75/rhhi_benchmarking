@@ -35,6 +35,7 @@
       yum:
         name: collectd
         state: latest
+        disablerepo: rhel-7-server-rhvh-4-rpms
 
     - name: deploy monitoring
       include_role:
