@@ -29,7 +29,6 @@
     state: present
   with_items:
     - collectd
-    - collectd-python
 
 - name: Install iostat
   package:
