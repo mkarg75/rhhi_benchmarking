@@ -29,6 +29,7 @@
     state: present
   with_items:
     - collectd
+    - collectd-python
 
 - name: Install iostat
   package:
@@ -42,13 +43,12 @@
     owner: root
     group: root
 
-- name: Create collectd python plugin directory
+- name: Create collectd bash plugin directory
   file:
     path: /usr/lib64/collectd/plugins/bash
     state: directory
     owner: root
     group: root
-
 
 - name: Download collectd-iostat plugin
   get_url:
