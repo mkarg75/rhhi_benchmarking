@@ -171,7 +171,7 @@ def main(argv):
         exit(0)
 
     # set the start date
-    startdate = datetime.datetime.now()
+    starttime = int(time.time() * 1000)
 
     uid = str(uuid.uuid4())
     # run the docker instance(s) and collect the output 
@@ -192,12 +192,11 @@ def main(argv):
     print "All docker instances finished"
 
     # set the end date 
-    enddate = datetime.datetime.now()
+    endtime = int(time.time() * 1000) 
 
-    # mark the area in grafana with start and end date from above
-    #postdata = {"time": 'startdate', "isRegion": true, "timeEnd": enddate, "tags":["Start","End"],"text":"Benchmark Run"}
-    #req = urllib2.Request('http://grafana.poc4.maxta.com/api/annotations')
-    #req.add_header('Content-Type', 'application/json')
+    if "load-1" in hostname:
+        # we only need to do the annotation once, so let's do it from host load-1
+        output = commands.getoutput('curl -X POST http://admin:admin@192.168.104.17:3000/api/annotations -H "Content-Type: application/json" -d "{"dashboardId":1,"panelId":1,"time":starttime,"isRegion":true,"timeEnd":endtime,"tags":["idstring"],"text":"idstring"}')
 
     #response = urllib.urlopen(req, json.dumps(postdata))
     # close the DB connection
