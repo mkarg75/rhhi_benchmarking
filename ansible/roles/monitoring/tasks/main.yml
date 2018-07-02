@@ -38,6 +38,14 @@
     owner: root
     group: root
 
+- name: Create collectd python plugin directory
+  file:
+    path: /usr/lib64/collectd/plugins/bash
+    state: directory
+    owner: root
+    group: root
+
+
 - name: Download collectd-iostat plugin
   get_url:
     url: https://raw.githubusercontent.com/deniszh/collectd-iostat-python/master/collectd_iostat_python.py
@@ -60,7 +68,7 @@
 - name: Download collectd network bandwith usage plugin
   get_url:
     url: https://raw.githubusercontent.com/Cosmologist/collectd-network-bandwidth-usage/master/exec-network-bandwidth-usage.sh
-    dest: /usr/lib64/collectd/plugins/python/exec-network-bandwith-usage.sh
+    dest: /usr/lib64/collectd/plugins/bash/exec-network-bandwith-usage.sh
     mode: 0755
 
 - name: Copy collectd config file
