@@ -196,7 +196,7 @@ def main(argv):
 
     if "load-1" in hostname:
         # we only need to do the annotation once, so let's do it from host load-1
-        output = commands.getoutput('curl -X POST http://admin:admin@192.168.104.17:3000/api/annotations -H "Content-Type: application/json" -d "{"dashboardId":1,"panelId":1,"time":starttime,"isRegion":true,"timeEnd":endtime,"tags":["idstring"],"text":"idstring"}')
+        output = commands.getoutput('curl -X POST http://admin:admin@192.168.104.17:3000/api/annotations -H "Content-Type: application/json" -d \'{"dashboardId":2,"time":starttime,"isRegion":true,"timeEnd":endtime,"tags":["idstring"],"text":"idstring"}\')
 
     #response = urllib.urlopen(req, json.dumps(postdata))
     # close the DB connection
