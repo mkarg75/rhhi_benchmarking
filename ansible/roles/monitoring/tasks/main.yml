@@ -68,10 +68,10 @@
     group: root
     mode: 0644
 
-- name: Download collectd network bandwith usage plugin
-  get_url:
-    url: https://raw.githubusercontent.com/Cosmologist/collectd-network-bandwidth-usage/master/exec-network-bandwidth-usage.sh
-    dest: /usr/lib64/collectd/plugins/bash/exec-network-bandwith-usage.sh
+- name: copy collectd network bandwith usage plugin
+  copy:
+    src: nic_throughput.sh
+    dest: /usr/lib64/collectd/plugins/bash/nic_throughput.sh
     mode: 0755
 
 - name: Copy collectd config file
