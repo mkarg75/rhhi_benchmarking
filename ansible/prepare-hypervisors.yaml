@@ -16,6 +16,8 @@
     - name: apply chronyd role
       include_role:
         name: chronyd
+      vars:
+        enable_rh_repos: false
 
     - name: enable required rhsm repositories
       rhsm_repository: name={{ required_repos | join(',') }}
