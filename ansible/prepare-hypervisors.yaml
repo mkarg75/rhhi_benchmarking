@@ -2,9 +2,6 @@
 
 - hosts: hypervisors
 
-  roles:
-    - rhsm-registered
-    - monitoring
 
   vars:
     required_repos:
@@ -12,14 +9,47 @@
 
   tasks:
 
-    - name: enable required repositories
+    - name: register host with CDN
+      include_role:
+        name: rhsm-registered
+
+    - name: apply chronyd role
+      include_role:
+        name: chronyd
+
+    - name: enable required rhsm repositories
       rhsm_repository: name={{ required_repos | join(',') }}
       register: enabled_repos
 
-    - name: Disable all repositories except required_repos
+    - name: Disable all rhsm repositories except required_repos
       rhsm_repository:
         name: "{{ enabled_repos.repositories |
          map(attribute='id') |
          difference(required_repos) |
          join(',' ) }}"
         state: disabled
+
+    - name: enable centos opstools repository
+      yum_repository:
+        name: centos-opstools
+        description: CentOS OpsTools
+        baseurl: http://mirror.centos.org/centos/7/opstools/$basearch/
+        gpgcheck: no
+
+    - name: update collectd
+      yum:
+        name: collectd
+        state: latest
+        disablerepo: rhel-7-server-rhvh-4-rpms
+
+    - name: install collectd-python
+      yum:
+        name: collectd-python
+        state: present
+        disablerepo: rhel-7-server-rhvh-4-rpms
+
+    - name: deploy rest of the monitoring config
+      include_role:
+        name: monitoring
+      vars:
+        enable_rh_repos: false
