@@ -69,12 +69,12 @@
     mode: 0644
 
 - name: Download collectd network bandwith usage plugin
-  template:
-    src: exec-network-bandwidth-usage.sh.j2
+  get_url:
+    url: https://raw.githubusercontent.com/Cosmologist/collectd-network-bandwidth-usage/master/exec-network-bandwidth-usage.sh
     dest: /usr/lib64/collectd/plugins/bash/exec-network-bandwidth-usage.sh
     owner: root
     group: root
-    mode: 0644
+    mode: 0755
 
 - name: Copy collectd config file
   template:

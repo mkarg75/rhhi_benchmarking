@@ -5,7 +5,7 @@ INTERVAL="${COLLECTD_INTERVAL:-60}"
 
 while sleep "$INTERVAL"; do
     for INTERFACE in `ls -1 /sys/class/net` ; do
-        echo "Current interface is $INTERFACE"
+        #echo "Current interface is $INTERFACE"
         RX=`cat /sys/class/net/$INTERFACE/statistics/rx_bytes`
         TX=`cat /sys/class/net/$INTERFACE/statistics/tx_bytes`
 
