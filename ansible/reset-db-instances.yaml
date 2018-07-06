@@ -83,8 +83,8 @@
         poll: 30
 
       - name: delete innodb log files
-       file: path={{ item }} state=abset
-       with_fileglob: /var/lib/mysql/ib_logfile*
+        file: path={{ item }} state=abset
+        with_fileglob: /var/lib/mysql/ib_logfile*
 
       - name: ensure correct ownership of database directory
         file:
