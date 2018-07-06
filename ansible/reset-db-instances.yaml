@@ -68,6 +68,8 @@
 
       - name: delete existing mysql directory contents
         shell: rm -rf /var/lib/mysql/*
+        args:
+          warn: no
 
       # - find:
       #     paths: /var/lib/mysql
