@@ -78,7 +78,6 @@
 
       - name: start rsync job to restore database from backup
         shell: rsync -aq /mnt/ /var/lib/mysql
-        creates: /var/lib/mysql/ibdata1
         async: 7200
         poll: 30
 
