@@ -104,7 +104,7 @@
       - name: create the benchmark user web
         mysql_user:
           name: web
-          host_all: yes
+          host: '%'
           password: web
           priv: '*.*:ALL'
           state: present
