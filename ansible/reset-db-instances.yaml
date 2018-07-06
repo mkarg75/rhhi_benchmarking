@@ -82,7 +82,7 @@
         async: 7200
         poll: 30
 
-     - name: delete innodb log files
+      - name: delete innodb log files
        file: path={{ item }} state=abset
        with_fileglob: /var/lib/mysql/ib_logfile*
 
