@@ -67,7 +67,7 @@
     - name: Run DS2 DB oVirt VMs
       include_role: name=ovirt-ansible-vm-infra
       vars:
-        vms: "{{ ds2_db_vms | batch(5) | list }}"
+        vms: "{{ ds2_db_vms }}"
 
     - set_fact:
         ds_db_vm_names: "{{ ds2_db_vms | map(attribute='name') | list }}"
