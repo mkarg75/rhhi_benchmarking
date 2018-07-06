@@ -66,15 +66,18 @@
           opts: ro
           state: mounted
 
-      - find:
-          paths: /var/lib/mysql
-          file_type: any
-          pattern: "*"
-        register: files_to_delete
+      - name: delete existing mysql directory contents
+        shell: rm -rf /var/lib/mysql/*
 
-      - name: clean mysql dir on host
-        file: path={{ item }} state=absent
-        with_items: "{{ files_to_delete.files }}"
+      # - find:
+      #     paths: /var/lib/mysql
+      #     file_type: any
+      #     pattern: "*"
+      #   register: files_to_delete
+      #
+      # - name: clean mysql dir on host
+      #   file: path={{ item }} state=absent
+      #   with_items: "{{ files_to_delete.files }}"
 
       - name: start rsync job to restore database from backup
         shell: rsync -aq /mnt/ /var/lib/mysql
