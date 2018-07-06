@@ -7,6 +7,8 @@
     engine_url: https://rhvm.microlab/ovirt-engine/api
     engine_user: admin@internal
 
+    dataset_disk_id: 31663b68-22a7-4380-8441-74ae4dd30633
+
     db_vm_tag: ds-mysql
 
   tasks:
@@ -26,18 +28,24 @@
     - name: Get DB VMs by tag
       ovirt_vms_facts:
         auth: "{{ ovirt_auth }}"
-        pattern: "tag={{ db_vm_tag }}"
+        pattern: "tag={{ db_vm_tag }} and status = Up"
       register: db_vms
+
+    - name: Attach dataset disk
+      ovirt_disk:
+        id: "{{ dataset_disk_id }}"
+        vm_name: "{{ item }}"
+      loop: "{{ db_vms.ansible_facts.ovirt_vms|json_query('[*].name') }}"
 
     - name: Get DB VM NICs
       ovirt_nics_facts:
         auth: "{{ ovirt_auth }}"
         vm: "{{ item }}"
-      register: dsb_nics
+      register: db_nics
       loop: "{{ db_vms.ansible_facts.ovirt_vms|json_query('[*].name') }}"
 
     - set_fact:
-        db_ips: "{{ dsb_nics.results|json_query('[].ansible_facts.ovirt_nics[].reported_devices[].ips[?version==`v4`].address | []') }}"
+        db_ips: "{{ db_nics.results|json_query('[].ansible_facts.ovirt_nics[].reported_devices[].ips[?version==`v4`].address | []') }}"
 
     - name: add DBs to inventory
       add_host:
