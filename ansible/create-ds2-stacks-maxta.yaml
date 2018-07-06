@@ -17,7 +17,7 @@
       name: "ds2-mysql-{{ item }}"
       tag: "{{ db_ds2_vm_tag }}"
       profile:
-        state: next_run
+        state: present
         force: yes
         cluster: Default
         clone: yes
@@ -37,6 +37,7 @@
             - vnc
         cloud_init_persist: true
         cloud_init:
+          - dns_servers: "192.168.104.5"
           - nic_ip_address: "192.168.107.{{ item | int }}"
           - nic_gateway: 192.168.104.1
           - nic_netmask: 255.255.252.0
