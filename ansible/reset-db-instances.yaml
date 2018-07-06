@@ -53,7 +53,7 @@
       add_host:
         name: "{{ item }}"
         groups: db_hosts
-        ansible_ssh_user: cloud-user
+        ansible_ssh_user: root
       with_items: "{{ db_ips }}"
 
 - name: Initialize DB hosts
