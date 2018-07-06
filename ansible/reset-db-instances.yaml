@@ -52,7 +52,6 @@
         name: "{{ item }}"
         groups: db_hosts
         ansible_ssh_user: cloud-user
-        ansible_ssh_pass: Ebcroot1
       with_items: "{{ db_ips }}"
 
 - name: Initialize DB hosts
