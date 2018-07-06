@@ -100,6 +100,13 @@
       - name: restore selinux label on database directory
         shell: restorecon -R /var/lib/mysql
 
+      - firewalld:
+          service: mysql
+          permanent: true
+          state: enabled
+          permanent: yes
+          immediate: yes
+
       - name: start and enable mysql
         service:
           name: mariadb
