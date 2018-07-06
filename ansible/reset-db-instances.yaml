@@ -7,8 +7,6 @@
     engine_url: https://rhvm.microlab/ovirt-engine/api
     engine_user: admin@internal
 
-    dataset_disk_id: 31663b68-22a7-4380-8441-74ae4dd30633
-
     db_vm_tag: ds-mysql
 
   tasks:
@@ -30,14 +28,6 @@
         auth: "{{ ovirt_auth }}"
         pattern: "tag={{ db_vm_tag }} and status = Up"
       register: db_vms
-
-    - name: Attach dataset disk
-      ovirt_disk:
-        auth: "{{ ovirt_auth }}"
-        id: "{{ dataset_disk_id }}"
-        vm_name: "{{ item }}"
-        interface: virtio
-      loop: "{{ db_vms.ansible_facts.ovirt_vms|json_query('[*].name') }}"
 
     - name: Get DB VM NICs
       ovirt_nics_facts:
