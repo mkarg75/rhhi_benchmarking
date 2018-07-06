@@ -78,8 +78,13 @@
 
       - name: start rsync job to restore database from backup
         shell: rsync -aq /mnt/ /var/lib/mysql
+        creates: /var/lib/mysql/ibdata1
         async: 7200
         poll: 30
+
+     - name: delete innodb log files
+       file: path={{ item }} state=abset
+       with_fileglob: /var/lib/mysql/ib_logfile*
 
       - name: ensure correct ownership of database directory
         file:
