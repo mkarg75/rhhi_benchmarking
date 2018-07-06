@@ -33,6 +33,7 @@
 
     - name: Attach dataset disk
       ovirt_disk:
+        auth: "{{ ovirt_auth }}"
         id: "{{ dataset_disk_id }}"
         vm_name: "{{ item }}"
       loop: "{{ db_vms.ansible_facts.ovirt_vms|json_query('[*].name') }}"
