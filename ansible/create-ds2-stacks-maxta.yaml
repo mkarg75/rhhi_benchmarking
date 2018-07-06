@@ -18,6 +18,7 @@
       tag: "{{ db_ds2_vm_tag }}"
       profile:
         state: next_run
+        force: yes
         cluster: Default
         clone: yes
         operating_system: rhel_7x64
