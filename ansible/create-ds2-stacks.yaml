@@ -5,11 +5,11 @@
 
   vars:
     how_many: 1
-    engine_url: https://rhvm.microlab/ovirt-engine/api
+    engine_url: https://rhvm.poc4.maxta.com/ovirt-engine/api
     engine_user: admin@internal
 
     db_vm_tag: ds-mysql
-    db_ds2_vm_tag: ds2-mysql-25gb
+    db_ds2_vm_tag: ds2-mysql-50gb
 
     ds2_db_vm:
       name: "ds2-mysql-{{ item }}"
@@ -17,15 +17,15 @@
       profile:
         state: running
         cluster: Default
-        template: ds2-mysql-25gb-template
-        clone: no
+        template: ds2-mysql-50gb-template-without-data
+        clone: yes
         memory: 8GiB
         cores: 4
-        ssh_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD36kKPUyRWFQnnwry5N/LyGgrcaeV0XN5FMpengaCx87GM36f4QWuk2+7Bk6lj2VfQJBtAUkeqHS6dOxdHoGRGe0SqJ/TTmNo2RjGFun81TSjV4rPC0gW2qbKQaKOQ1ODOB1g1jFbm2ir8AeO5O21mqxTZQ3eg49w2t0BYT0MI30JnwoGnoP0WOw8/B4kHVh9SEwQzPMRsikfvGVNLFImig8u9xMzCc5+zp34MCUzUhM/fo5SuSjQDaySuABMyCPUDYaJsyBxrhRuqonMnaElf/T8JSvPrgm4uJb4mH9fqs/4PdBWtZ2cTHYGKcuUdIGCtIzYGRh+ErTN/ccd/K1V1
+        ssh_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCigf7/7tL20IMSHEYqaULiFV5A1I2lDM3kYk8RAMRhMgYDs+L3PBZoioxBgCJJTw+uSgJWfw3OOpMVKwF6ll/oK+hxB6V4NbTSsCbJID0K18bFrUWmXwzS5QU6YWtjcbRrwIo++PSUjG75UMacmDEPS+fuBDcq5JJ5miuepg8+lSZeoy16YsO2AjC8wTzWX+iTzdBk/xSOR8iQojxiMnfJ7rR1u8lO2lJEjTjGMtWqYUlr2xveZFBpQN6L7JnW8sX+At2D7nl0Mw3l//GpQiqUj6HtGO41EQ4fdM9SN8W1Mw7U23pm8Od50f8AFM9gJuVKKNcVP58X1FK1bXbQd98V root@localhost.localdomain
         cloud_init:
-          - nic_ip_address: "172.17.0.{{ item | int + 15 }}"
-          - nic_gateway: 172.17.0.1
-          - nic_netmask: 255.255.255.0
+          - nic_ip_address: "192.168.107.{{ item | int }}"
+          - nic_gateway: 192.168.104.1
+          - nic_netmask: 255.255.252.0
           - nic_on_boot: true
           - nic_name: eth0
           - nic_boot_protocol: static
