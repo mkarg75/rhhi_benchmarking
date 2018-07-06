@@ -17,8 +17,7 @@
       name: "ds2-mysql-{{ item }}"
       tag: "{{ db_ds2_vm_tag }}"
       profile:
-        state: present
-        force: yes
+        state: running
         cluster: Default
         clone: yes
         operating_system: rhel_7x64
