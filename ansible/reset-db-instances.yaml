@@ -26,25 +26,24 @@
     - name: Get DB VMs by tag
       ovirt_vms_facts:
         auth: "{{ ovirt_auth }}"
-        pattern: "tag={{ db_vm_tag }}"
+        pattern: "tag={{ db_vm_tag }} and status = Up"
       register: db_vms
 
     - name: Get DB VM NICs
       ovirt_nics_facts:
         auth: "{{ ovirt_auth }}"
         vm: "{{ item }}"
-      register: dsb_nics
+      register: db_nics
       loop: "{{ db_vms.ansible_facts.ovirt_vms|json_query('[*].name') }}"
 
     - set_fact:
-        db_ips: "{{ dsb_nics.results|json_query('[].ansible_facts.ovirt_nics[].reported_devices[].ips[?version==`v4`].address | []') }}"
+        db_ips: "{{ db_nics.results|json_query('[].ansible_facts.ovirt_nics[].reported_devices[].ips[?version==`v4`].address | []') }}"
 
     - name: add DBs to inventory
       add_host:
         name: "{{ item }}"
         groups: db_hosts
-        ansible_ssh_user: cloud-user
-        ansible_ssh_pass: Ebcroot1
+        ansible_ssh_user: root
       with_items: "{{ db_ips }}"
 
 - name: Initialize DB hosts
@@ -67,20 +66,29 @@
           opts: ro
           state: mounted
 
-      - find:
-          paths: /var/lib/mysql
-          file_type: any
-          pattern: "*"
-        register: files_to_delete
+      - name: delete existing mysql directory contents
+        shell: rm -rf /var/lib/mysql/*
+        args:
+          warn: no
 
-      - name: clean mysql dir on host
-        file: path={{ item }} state=absent
-        with_items: "{{ files_to_delete.files }}"
+      # - find:
+      #     paths: /var/lib/mysql
+      #     file_type: any
+      #     pattern: "*"
+      #   register: files_to_delete
+      #
+      # - name: clean mysql dir on host
+      #   file: path={{ item }} state=absent
+      #   with_items: "{{ files_to_delete.files }}"
 
       - name: start rsync job to restore database from backup
         shell: rsync -aq /mnt/ /var/lib/mysql
         async: 7200
         poll: 30
+
+      - name: delete innodb log files
+        file: path={{ item }} state=absent
+        with_fileglob: /var/lib/mysql/ib_logfile*
 
       - name: ensure correct ownership of database directory
         file:
@@ -92,6 +100,13 @@
       - name: restore selinux label on database directory
         shell: restorecon -R /var/lib/mysql
 
+      - firewalld:
+          service: mysql
+          permanent: true
+          state: enabled
+          permanent: yes
+          immediate: yes
+
       - name: start and enable mysql
         service:
           name: mariadb
@@ -101,7 +116,7 @@
       - name: create the benchmark user web
         mysql_user:
           name: web
-          host_all: yes
+          host: '%'
           password: web
           priv: '*.*:ALL'
           state: present
