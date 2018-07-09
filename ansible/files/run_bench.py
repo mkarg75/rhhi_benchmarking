@@ -27,7 +27,7 @@ def get_threads():
     # we can rely on DriverConfig.txt.0 to be there since we need to run at least one container
     # if it is not, we bail out
     try:
-        fh = open("DriverConfig.txt.0")
+        fh = open("dsmysqldriver/DriverConfig.txt.0")
     except: 
         print "Unable to open DriverConfig.txt.0, exiting"
         sys.exit(1)
@@ -64,61 +64,61 @@ def updatedb(result, typ, conn, stacks, threads, uid):
        if "Final" in line:
            values = line.split()
 
-       # Prepare the values so they fit into the db fields
-       year = (values[1].split("/"))[2]
-       day = (values[1].split("/"))[1]
-       month = re.sub('[(]', '', (values[1].split("/"))[0])
-       time = re.sub('[:)]', '', values[2])
-       test_date = year + month + day + time
-       et = values[4]
-       n_overall = (values[5].split("="))[1]
-       opm = (values[6].split("="))[1]
-       rt_tot_lastn_max = (values[7].split("="))[1]
-       rt_tot_avg = (values[8].split("="))[1]
-       n_login_overall=(values[9].split("="))[1]
-       n_newcust_overall=(values[10].split("="))[1]
-       n_browse_overall=(values[11].split("="))[1]
-       n_purchase_overall=(values[12].split("="))[1]
-       rt_login_avg_msec=(values[13].split("="))[1]
-       rt_newcust_avg_msec=(values[14].split("="))[1]
-       rt_browse_avg_msec=(values[15].split("="))[1]
-       rt_purchase_avg_msec=(values[16].split("="))[1]
-       rt_tot_sampled=(values[17].split("="))[1]
-       n_rollbacks_overall=(values[18].split("="))[1]
-       rb_rate=values[21]
-       rollback_rate = re.sub('[%]', '', rb_rate)
-       #print "dstyp: ", typ
-       #print "test_date: ", test_date
-       #print "et: ", et
-       #print "n_overall: ", n_overall
-       #print "opm: ", opm
-       #print "rt_tot_lastn_max: ", rt_tot_lastn_max
-       #print "rt_tot_avg: ", rt_tot_avg
-       #print "n_login_overall: ", n_login_overall
-       #print "n_newcust_overall: ", n_newcust_overall
-       #print "n_browse_overall: ", n_browse_overall
-       #print "n_purchase_overall: ", n_purchase_overall
-       #print "rt_login_avg_msec: ", rt_login_avg_msec
-       #print "rt_newcust_avg_msec: ", rt_newcust_avg_msec
-       #print "rt_browse_avg_msec: ", rt_browse_avg_msec
-       #print "rt_purchase_avg_msec: ", rt_purchase_avg_msec
-       #print "rt_tot_sampled: ", rt_tot_sampled
-       #print "n_rollbacks_overall: ", n_rollbacks_overall
-       #print "rollback_rate: ", rollback_rate
+           # Prepare the values so they fit into the db fields
+           year = (values[1].split("/"))[2]
+           day = (values[1].split("/"))[1]
+           month = re.sub('[(]', '', (values[1].split("/"))[0])
+           time = re.sub('[:)]', '', values[2])
+           test_date = year + month + day + time
+           et = values[4]
+           n_overall = (values[5].split("="))[1]
+           opm = (values[6].split("="))[1]
+           rt_tot_lastn_max = (values[7].split("="))[1]
+           rt_tot_avg = (values[8].split("="))[1]
+           n_login_overall=(values[9].split("="))[1]
+           n_newcust_overall=(values[10].split("="))[1]
+           n_browse_overall=(values[11].split("="))[1]
+           n_purchase_overall=(values[12].split("="))[1]
+           rt_login_avg_msec=(values[13].split("="))[1]
+           rt_newcust_avg_msec=(values[14].split("="))[1]
+           rt_browse_avg_msec=(values[15].split("="))[1]
+           rt_purchase_avg_msec=(values[16].split("="))[1]
+           rt_tot_sampled=(values[17].split("="))[1]
+           n_rollbacks_overall=(values[18].split("="))[1]
+           rb_rate=values[21]
+           rollback_rate = re.sub('[%]', '', rb_rate)
+           #print "dstyp: ", typ
+           #print "test_date: ", test_date
+           #print "et: ", et
+           #print "n_overall: ", n_overall
+           #print "opm: ", opm
+           #print "rt_tot_lastn_max: ", rt_tot_lastn_max
+           #print "rt_tot_avg: ", rt_tot_avg
+           #print "n_login_overall: ", n_login_overall
+           #print "n_newcust_overall: ", n_newcust_overall
+           #print "n_browse_overall: ", n_browse_overall
+           #print "n_purchase_overall: ", n_purchase_overall
+           #print "rt_login_avg_msec: ", rt_login_avg_msec
+           #print "rt_newcust_avg_msec: ", rt_newcust_avg_msec
+           #print "rt_browse_avg_msec: ", rt_browse_avg_msec
+           #print "rt_purchase_avg_msec: ", rt_purchase_avg_msec
+           #print "rt_tot_sampled: ", rt_tot_sampled
+           #print "n_rollbacks_overall: ", n_rollbacks_overall
+           #print "rollback_rate: ", rollback_rate
 
-       # Insert the results into the DB
-       x = conn.cursor()
-       #print "Entering data into mysql"
-       try:
-           x.execute("""INSERT INTO results \
-                 (hostname, idstring, uuid, test_date, threads, nr_stacks, et, n_overall, ds_typ, opm, rt_tot_lastn_max, rt_tot_avg, n_login_overall, n_newcust_overall, n_browse_overall, rt_login_avg_msec, rt_newcust_avg_msec, rt_browse_avg_msec, rt_purchase_avg_msec, n_purchase_overall,  rt_tot_sampled, n_rollbacks_overall, rollback_rate) VALUES \                 
-                 (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""", \
-                 (hostname, idstring, uid, test_date, threads, stacks, et, n_overall, typ, opm, rt_tot_lastn_max, rt_tot_avg, n_login_overall, n_newcust_overall, n_browse_overall, rt_login_avg_msec, rt_newcust_avg_msec, rt_browse_avg_msec, rt_purchase_avg_msec, n_purchase_overall, rt_tot_sampled, n_rollbacks_overall, rollback_rate))                                 
-           conn.commit()
-           print "DB commit successful"
-       except MySQLdb.Error as e:
-           print "Error: ", e
-           conn.rollback()
+           # Insert the results into the DB
+           x = conn.cursor()
+           #print "Entering data into mysql"
+           try:
+               x.execute("""INSERT INTO results \
+                     (hostname, idstring, uuid, test_date, threads, nr_stacks, et, n_overall, ds_typ, opm, rt_tot_lastn_max, rt_tot_avg, n_login_overall, n_newcust_overall, n_browse_overall, rt_login_avg_msec, rt_newcust_avg_msec, rt_browse_avg_msec, rt_purchase_avg_msec, n_purchase_overall,  rt_tot_sampled, n_rollbacks_overall, rollback_rate) VALUES \                 
+                     (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""", \
+                     (hostname, idstring, uid, test_date, threads, stacks, et, n_overall, typ, opm, rt_tot_lastn_max, rt_tot_avg, n_login_overall, n_newcust_overall, n_browse_overall, rt_login_avg_msec, rt_newcust_avg_msec, rt_browse_avg_msec, rt_purchase_avg_msec, n_purchase_overall, rt_tot_sampled, n_rollbacks_overall, rollback_rate))                                 
+               conn.commit()
+               print "DB commit successful"
+           except MySQLdb.Error as e:
+               print "Error: ", e
+               conn.rollback()
 
 
 
