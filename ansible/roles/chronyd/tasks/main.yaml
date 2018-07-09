@@ -1,14 +1,18 @@
-- name: enable required rhsm repositories
-  rhsm_repository: name={{ required_repos | join(',') }}
-  register: enabled_repos
+- block:
+  - name: enable required repositories
+    rhsm_repository: name={{ required_repos | join(',') }}
+    register: enabled_repos
 
-- name: Disable all rhsm repositories except required_repos
-  rhsm_repository:
-    name: "{{ enabled_repos.repositories |
-     map(attribute='id') |
-     difference(required_repos) |
-     join(',' ) }}"
-    state: disabled
+  - name: Disable all repositories except required_repos
+    rhsm_repository:
+      name: "{{ enabled_repos.repositories |
+       map(attribute='id') |
+       difference(required_repos) |
+       join(',' ) }}"
+      state: disabled
+  when:
+    - enable_rh_repos is defined
+    - enable_rh_repos
 
 - name: install chronyd
   yum:
