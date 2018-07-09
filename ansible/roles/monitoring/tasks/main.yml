@@ -77,7 +77,7 @@
 - name: Copy collectd config file
   template:
     src: network-bandwith-usage.conf.j2
-    dest: /etc/collectd.d/network-bandwith-usage.conf
+    dest: /etc/collectd.d/network-bandwidth-usage.conf
     owner: root
     group: root
     mode: 0755
