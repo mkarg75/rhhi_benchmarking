@@ -58,7 +58,7 @@ def ds3_supb():
      testdic['proc'] = typ
      c_counter += 1
 
-def updatedb(result, typ, conn, stacks, threads, uid):
+def updatedb(result, typ, conn, stacks, threads, uid, idstring):
     #print "Running updatedb"
     for line in result.split("\n"):
        if "Final" in line:
@@ -187,7 +187,7 @@ def main(argv):
         key.wait()
         result = (key.communicate())[0]
         typ = (processes[key])
-        updatedb(result, typ, conn, stacks, threads, uid)
+        updatedb(result, typ, conn, stacks, threads, uid, idstring)
 
     print "All docker instances finished"
 
