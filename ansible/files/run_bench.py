@@ -35,8 +35,10 @@ def get_threads():
     for line in fh:
         if "n_threads" in line: 
             threads = (line.split("="))[1]
+        if "db_size" in line:
+            db_size = (line.split("="))[1]
     fh.close
-    return threads
+    return threads, db_size
 
 def myconverter(o):
     if isinstance(o, datetime.datetime):
@@ -58,7 +60,7 @@ def ds3_supb():
      testdic['proc'] = typ
      c_counter += 1
 
-def updatedb(result, typ, conn, stacks, threads, uid, idstring):
+def updatedb(result, typ, conn, stacks, threads, uid, idstring, db_size):
     #print "Running updatedb"
     for line in result.split("\n"):
        if "Final" in line:
@@ -110,7 +112,7 @@ def updatedb(result, typ, conn, stacks, threads, uid, idstring):
            x = conn.cursor()
            #print "Entering data into mysql"
            try:
-               x.execute("""INSERT INTO results (hostname, idstring, uuid, test_date, threads, nr_stacks, et, n_overall, ds_typ, opm, rt_tot_lastn_max, rt_tot_avg, n_login_overall, n_newcust_overall, n_browse_overall, rt_login_avg_msec, rt_newcust_avg_msec, rt_browse_avg_msec, rt_purchase_avg_msec, n_purchase_overall,  rt_tot_sampled, n_rollbacks_overall, rollback_rate) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""", (hostname, idstring, uid, test_date, threads, stacks, et, n_overall, typ, opm, rt_tot_lastn_max, rt_tot_avg, n_login_overall, n_newcust_overall, n_browse_overall, rt_login_avg_msec, rt_newcust_avg_msec, rt_browse_avg_msec, rt_purchase_avg_msec, n_purchase_overall, rt_tot_sampled, n_rollbacks_overall, rollback_rate))                                 
+               x.execute("""INSERT INTO results (hostname, idstring, uuid, db_size, test_date, threads, nr_stacks, et, n_overall, ds_typ, opm, rt_tot_lastn_max, rt_tot_avg, n_login_overall, n_newcust_overall, n_browse_overall, rt_login_avg_msec, rt_newcust_avg_msec, rt_browse_avg_msec, rt_purchase_avg_msec, n_purchase_overall,  rt_tot_sampled, n_rollbacks_overall, rollback_rate) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""", (hostname, idstring, uid, db_size, test_date, threads, stacks, et, n_overall, typ, opm, rt_tot_lastn_max, rt_tot_avg, n_login_overall, n_newcust_overall, n_browse_overall, rt_login_avg_msec, rt_newcust_avg_msec, rt_browse_avg_msec, rt_purchase_avg_msec, n_purchase_overall, rt_tot_sampled, n_rollbacks_overall, rollback_rate))                                 
                conn.commit()
                print "DB commit successful"
            except MySQLdb.Error as e:
@@ -157,7 +159,7 @@ def main(argv):
 
     # get the number of threads
 
-    threads = get_threads()
+    threads, db_size = get_threads()
 
     # Set up the DB connection
     try:
@@ -184,7 +186,7 @@ def main(argv):
         key.wait()
         result = (key.communicate())[0]
         typ = (processes[key])
-        updatedb(result, typ, conn, stacks, threads, uid, idstring)
+        updatedb(result, typ, conn, stacks, threads, uid, idstring, db_size)
 
     print "All docker instances finished"
 
