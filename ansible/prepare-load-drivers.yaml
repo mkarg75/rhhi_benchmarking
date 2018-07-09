@@ -62,13 +62,13 @@
      file: path=/root/dsmysqldriver state=directory
 
 
-   - name: Copy collectd config file
-     template:
-       src: network-bandwidth-usage.conf.j2
-       dest: /etc/collectd.d/network-bandwidth-usage.conf
-       owner: root
-       group: root
-       mode: 0644
+     #- name: Copy collectd config file
+     #template:
+     #  src: network-bandwidth-usage.conf.j2
+     #  dest: /etc/collectd.d/network-bandwidth-usage.conf
+     #  owner: root
+     #  group: root
+     #  mode: 0644
 
 - hosts: load-1.poc4.maxta.com
 
