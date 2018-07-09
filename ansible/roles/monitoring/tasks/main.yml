@@ -80,7 +80,7 @@
     dest: /etc/collectd.d/network-bandwith-usage.conf
     owner: root
     group: root
-    mode: 0644
+    mode: 0755
 
 - name: Unfortunately set SELinux to permissive to make collectd-iostat work
   selinux:
@@ -92,3 +92,12 @@
     name: collectd
     state: restarted
     enabled: yes
+
+
+#- name: Copy collectd config file
+#  template:
+#    src: network-bandwidth-usage.conf.j2
+#    dest: /etc/collectd.d/network-bandwidth-usage.conf
+#    owner: root
+#    group: root
+#    mode: 0644
