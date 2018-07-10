@@ -86,7 +86,7 @@
          owner: root
          group: root
          mode: 0644
-     loop: "{{ range(0,51,1)|list|zip(range(1,250,2))|list }}"
+     loop: "{{ range(0,51,1)|list|zip(range(1,250,3))|list }}"
 
 - hosts: rhel26.poc4.maxta.com
 
@@ -99,7 +99,7 @@
          owner: root
          group: root
          mode: 0644
-     loop: "{{ range(0,51,1)|list|zip(range(2,250,2))|list }}"
+     loop: "{{ range(0,51,1)|list|zip(range(2,250,3))|list }}"
 
 - hosts: rhel28.poc4.maxta.com
 
@@ -112,7 +112,7 @@
          owner: root
          group: root
          mode: 0644
-     loop: "{{ range(0,51,1)|list|zip(range(3,250,2))|list }}"
+     loop: "{{ range(0,51,1)|list|zip(range(3,250,3))|list }}"
 
 #- hosts: load-4.poc4.maxta.com
 
