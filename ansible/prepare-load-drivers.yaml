@@ -28,6 +28,9 @@
      state: enabled
      register: enabled_repos
 
+   - name: enable extra repo
+     rhsm_repository: name="rhel-7-server-extras-rpms"
+     state: enabled
 
    - name: install docker and ansible dependencies
      package: name={{ item }} state=present
