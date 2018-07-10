@@ -25,7 +25,9 @@
 
    - name: enable required repositories
      rhsm_repository: name={{ required_repos | join(',') }}
+     state: enabled
      register: enabled_repos
+
 
    - name: install docker and ansible dependencies
      package: name={{ item }} state=present
