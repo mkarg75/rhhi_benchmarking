@@ -70,7 +70,7 @@
        group: root
        mode: 0644
 
-- hosts: rhel-24.poc4.maxta.com
+- hosts: rhel24.poc4.maxta.com
 
   tasks:
 
@@ -83,7 +83,7 @@
          mode: 0644
      loop: "{{ range(0,51,1)|list|zip(range(1,250,2))|list }}"
 
-- hosts: rhel-26.poc4.maxta.com
+- hosts: rhel26.poc4.maxta.com
 
   tasks:
 
@@ -96,7 +96,7 @@
          mode: 0644
      loop: "{{ range(0,51,1)|list|zip(range(2,250,2))|list }}"
 
-- hosts: rhel-28.poc4.maxta.com
+- hosts: rhel28.poc4.maxta.com
 
   tasks:
 
