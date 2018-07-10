@@ -15,10 +15,6 @@
 
   tasks:
 
-   - name: enable required repositories
-     rhsm_repository: name={{ required_repos | join(',') }}
-     register: enabled_repos
-
    - name: Disable all repositories except required_repos
      rhsm_repository:
        name: "{{ enabled_repos.repositories |
@@ -26,6 +22,15 @@
         difference(required_repos) |
         join(',' ) }}"
        state: disabled
+
+   - name: enable required repositories
+     rhsm_repository: name={{ required_repos | join(',') }}
+     state: enabled
+     register: enabled_repos
+
+   - name: enable extra repo
+     rhsm_repository: name="rhel-7-server-extras-rpms"
+     state: enabled
 
    - name: install docker and ansible dependencies
      package: name={{ item }} state=present
@@ -81,7 +86,7 @@
          owner: root
          group: root
          mode: 0644
-     loop: "{{ range(0,51,1)|list|zip(range(1,250,2))|list }}"
+     loop: "{{ range(0,51,1)|list|zip(range(1,250,3))|list }}"
 
 - hosts: rhel26.poc4.maxta.com
 
@@ -94,7 +99,7 @@
          owner: root
          group: root
          mode: 0644
-     loop: "{{ range(0,51,1)|list|zip(range(2,250,2))|list }}"
+     loop: "{{ range(0,51,1)|list|zip(range(2,250,3))|list }}"
 
 - hosts: rhel28.poc4.maxta.com
 
@@ -107,7 +112,7 @@
          owner: root
          group: root
          mode: 0644
-     loop: "{{ range(0,51,1)|list|zip(range(3,250,2))|list }}"
+     loop: "{{ range(0,51,1)|list|zip(range(3,250,3))|list }}"
 
 #- hosts: load-4.poc4.maxta.com
 
