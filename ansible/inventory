@@ -1,5 +1,8 @@
 [monitoring]
-load[1:4].poc4.maxta.com
+#load[1:4].poc4.maxta.com
+rhel24.poc4.maxta.com
+rhel26.poc4.maxta.com
+rhel28.poc4.maxta.com
 
 [grafana_nodes]
 tower.poc4.maxta.com
@@ -7,6 +10,9 @@ tower.poc4.maxta.com
 [ds_nodes]
 
 [load_drivers]
-load[1:4].poc4.maxta.com
+#load[1:4].poc4.maxta.com
+rhel24.poc4.maxta.com
+rhel26.poc4.maxta.com
+rhel28.poc4.maxta.com
 
 
