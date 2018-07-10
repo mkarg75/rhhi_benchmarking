@@ -70,7 +70,7 @@
        group: root
        mode: 0644
 
-- hosts: load-1.poc4.maxta.com
+- hosts: rhel-24.poc4.maxta.com
 
   tasks:
 
@@ -81,22 +81,9 @@
          owner: root
          group: root
          mode: 0644
-     loop: "{{ range(0,51,1)|list|zip(range(1,250,3))|list }}"
+     loop: "{{ range(0,51,1)|list|zip(range(1,250,2))|list }}"
 
-- hosts: load-2.poc4.maxta.com
-
-  tasks:
-
-   - name: create config files for the containers
-     template:
-         src: templates/DriverConfig.txt.j2
-         dest: /root/dsmysqldriver/DriverConfig.txt.{{ item.0 }}
-         owner: root
-         group: root
-         mode: 0644
-     loop: "{{ range(0,51,1)|list|zip(range(2,250,3))|list }}"
-
-- hosts: load-3.poc4.maxta.com
+- hosts: rhel-26.poc4.maxta.com
 
   tasks:
 
@@ -107,9 +94,9 @@
          owner: root
          group: root
          mode: 0644
-     loop: "{{ range(0,51,1)|list|zip(range(3,250,3))|list }}"
+     loop: "{{ range(0,51,1)|list|zip(range(2,250,2))|list }}"
 
-- hosts: load-4.poc4.maxta.com
+- hosts: rhel-28.poc4.maxta.com
 
   tasks:
 
@@ -120,6 +107,19 @@
          owner: root
          group: root
          mode: 0644
-     loop: "{{ range(0,51,1)|list|zip(range(4,250,3))|list }}"
+     loop: "{{ range(0,51,1)|list|zip(range(3,250,2))|list }}"
+
+#- hosts: load-4.poc4.maxta.com
+
+#  tasks:
+
+#   - name: create config files for the containers
+#     template:
+#         src: templates/DriverConfig.txt.j2
+#         dest: /root/dsmysqldriver/DriverConfig.txt.{{ item.0 }}
+#         owner: root
+#         group: root
+#         mode: 0644
+#     loop: "{{ range(0,51,1)|list|zip(range(4,250,3))|list }}"
 
 
