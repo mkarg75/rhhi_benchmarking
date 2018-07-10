@@ -22,6 +22,7 @@ import socket
 hostname = socket.getfqdn()
 processes = dict()
 c_counter = 0 # containercounter
+uid = ''
 
 def get_threads():
     # we can rely on DriverConfig.txt.0 to be there since we need to run at least one container
@@ -128,6 +129,7 @@ def main(argv):
     ds2 = 0
     ds3 = 0
     idstring = ''
+    global uid = ''
 
     try:
         opts, args = getopt.getopt(argv,"hs:d:e:i:",["stacks=","ds2=","ds3=","id="])
@@ -156,6 +158,8 @@ def main(argv):
             if idstring == '':
                 print "No identification string given, exiting"
                 sys.exit(1)
+        elif opt in ("-u" "--uuid"):
+            uid = arg
 
     # get the number of threads
 
@@ -172,7 +176,7 @@ def main(argv):
     # set the start date
     starttime = int(time.time() * 1000)
 
-    uid = str(uuid.uuid4())
+    #uid = str(uuid.uuid4())
     # run the docker instance(s) and collect the output 
     for i in range(0, int(ds2)):
         print "Starting ds2 container number ", i
@@ -196,7 +200,6 @@ def main(argv):
     if "rhel24" in hostname:
         # we only need to do the annotation once, so let's do it from host load-1
         # build the command string
-        # cmd = 'curl -X POST http://admin:admin@192.168.104.17:3000/api/annotations -H "Content-Type: application/json" -d \'{"dashboardId":2,"time":' + str(starttime) + \',"isRegion":true,"timeEnd":\' + str(endtime) = \',"tags":["\' + idstring + \'"],"text":\' + idstring + \'"}\''
         cmd = 'curl -X POST http://admin:admin@192.168.104.17:3000/api/annotations -H "Content-Type: application/json" -d \'{"dashboardId":2,"time":' + str(starttime) + ',"isRegion":true,"timeEnd":' + str(endtime) + ',"tags":["' + uid + '"],"text":"' + idstring + '"}\''
         # run the command
         result = commands.getoutput(cmd)
@@ -210,7 +213,7 @@ if __name__ == "__main__":
    try:
       arg = sys.argv[1]
    except IndexError:
-      print "Usage: run_bench.py -s <stacks> -d <ds2_instances> -e <ds3_instances> -i <id_string>"
+      print "Usage: run_bench.py -s <stacks> -d <ds2_instances> -e <ds3_instances> -i <id_string> -u <uuid>"
       sys.exit()
 
    main(sys.argv[1:])
