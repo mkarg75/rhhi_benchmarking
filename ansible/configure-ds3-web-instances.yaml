@@ -51,7 +51,7 @@
   gather_facts: true
   become: true
 
-  vars:    
+  vars:
     web_vm_hostname_prefix: ds3-web-
     db_vm_hostname_prefix: ds3-mysql-
 
@@ -62,7 +62,7 @@
     - name: set mysql default host
       lineinfile:
         path: /etc/php.ini
-        line: mysql.default_host = {{ db_vm_hostname_prefix }}{{ ansible_hostname | regex_replace(web_vm_hostname_prefix + '([0-9]*)', '\\1') }}
+        line: mysql.default_host = {{ db_vm_hostname_prefix }}{{ ansible_hostname | regex_replace(web_vm_hostname_prefix + '([0-9]*)', '\1') }}
         regexp: '^mysql.default_host='
         state: present
 
