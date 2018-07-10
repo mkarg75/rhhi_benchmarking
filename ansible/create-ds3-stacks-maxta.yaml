@@ -100,19 +100,14 @@
         ds3_web_vms: "{{ (ds3_web_vms | default([])) + [ds3_web_vm] }}"
       with_sequence: "start=1 count={{ how_many }}"
 
+    - set_fact:
+        ds_db_vm_names: "{{ ds3_db_vms | map(attribute='name') | list }}"
+        ds_web_vm_names: "{{ ds3_web_vms | map(attribute='name') | list }}"
+
     - name: Run DS3 DB oVirt VMs
       include_role: name=ovirt-ansible-vm-infra
       vars:
         vms: "{{ ds3_db_vms }}"
-
-    - name: Run DS3 Web oVirt VMs
-      include_role: name=ovirt-ansible-vm-infra
-      vars:
-        vms: "{{ ds3_web_vms }}"
-
-    - set_fact:
-        ds_db_vm_names: "{{ ds3_db_vms | map(attribute='name') | list }}"
-        ds_web_vm_names: "{{ ds3_web_vms | map(attribute='name') | list }}"
 
     - name: Tag DS3 database VMs with {{ db_vm_tag }}
       ovirt_tags:
@@ -125,6 +120,11 @@
         auth: "{{ ovirt_auth }}"
         name: "{{ ds3_db_vm_tag }}"
         vms: "{{ ds_db_vm_names }}"
+
+    - name: Run DS3 Web oVirt VMs
+      include_role: name=ovirt-ansible-vm-infra
+      vars:
+        vms: "{{ ds3_web_vms }}"
 
     - name: Tag DS3 web VMs with {{ web_vm_tag }}
       ovirt_tags:
