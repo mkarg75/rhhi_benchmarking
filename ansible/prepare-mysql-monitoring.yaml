@@ -1,0 +1,104 @@
+- name: Find DB Instances
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars: 
+     engine_url: https://rhvm.microlab/ovirt-engine/api
+     engine_user: admin@internal
+
+     db_vm_tag: ds-mysql
+
+  tasks:
+    - include_vars: credentials/ovirt-credentials.yaml
+
+    - assert:
+        that:
+          - engine_url is defined
+          - engine_user id defined
+          - engine_password is defined
+
+    - ovirt_auth:
+        url: "{{ engine_url }}"
+        username: "{{ engine_user }}"
+        password: "{{ engine_password }}"
+
+    - name: Get DB VMs by tag
+      ovirt_vms_facts:
+        auth: "{{ ovirt_auth }}"
+        pattern: "tag={{ db_vm_tag }} and status = Up"
+      register: db_vms
+
+    - name: Get DB VM NICs
+      ovirt_nics_facts:
+        auth: "{{ ovirt_auth }}"
+        vm: "{{ item }}"
+      register: db_nics
+      loop: "{{ db_vms.ansible_facts.ovirt_vms|json_query('[*].name') }}"
+
+    - set_fact:
+        db_ips: "{{ db_nics.results|json_query('[].ansible_facts.ovirt_nics[].reported_devices[].ips[?version==`v4`].address | []') }}"
+
+    - name: Add DBs to inventory
+      add_host:
+        name: "{{ item }}"
+        groups: db_hosts
+        ansible_ssh_user: root
+      with_items: "{{ db_ips }}"
+
+- name: Set up DB hosts for mysql monitoring
+  hosts: db_hosts
+  gather_facts: true
+  become: true
+
+  tasks:
+    - name: Enable mysql performance schema
+      lineinfile:
+        path: /etc/my.cnf.d/server.cnf
+        state: present
+        firstmatch: yes
+        regexp: '\[mysqld\]'
+        insertafter: '\[mysqld\]'
+        line: 'performance_schema=ON'
+
+    - name: Install collectd requirements
+      yum:
+        name: {{ item }}
+        state: present
+      with_items:
+        - collectd
+        - collectd-dbi
+        - libdbi
+        - libdbi-dbd-mysql
+
+    - name: Add grafana user to the mysql db
+      mysql_user:
+        name: 'grafana'
+        password: 'monitoring'
+        priv: '*.*:ALL'
+        state: present
+        login_user: root
+    
+    - name: Add the dbi config file for mysql monitoring
+      copy: 
+        src: files/dbi.conf
+        dest: /etc/collectd.d/dbi.conf
+        owner: root
+        group: root
+        mode: 0644
+     
+    - name: Copy the collectd config file 
+      copy:
+        src: files/collectd.conf
+        dest: /etc/collectd.conf
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: Start and enable collectd
+      service:
+        name: collectd
+        state: restarted
+        enabled: yes
+
+
