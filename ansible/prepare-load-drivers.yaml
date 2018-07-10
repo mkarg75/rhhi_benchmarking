@@ -15,10 +15,6 @@
 
   tasks:
 
-   - name: enable required repositories
-     rhsm_repository: name={{ required_repos | join(',') }}
-     register: enabled_repos
-
    - name: Disable all repositories except required_repos
      rhsm_repository:
        name: "{{ enabled_repos.repositories |
@@ -26,6 +22,10 @@
         difference(required_repos) |
         join(',' ) }}"
        state: disabled
+
+   - name: enable required repositories
+     rhsm_repository: name={{ required_repos | join(',') }}
+     register: enabled_repos
 
    - name: install docker and ansible dependencies
      package: name={{ item }} state=present
