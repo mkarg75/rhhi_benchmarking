@@ -1,4 +1,4 @@
-- name: Find DB Instances
+- name: Configure DS3 web server instances
   hosts: localhost
   connection: local
   gather_facts: false
@@ -8,8 +8,6 @@
     engine_user: admin@internal
 
     web_vm_tag: ds-web
-    web_vm_hostname_prefix: ds3-web-
-    db_vm_hostname_prefix: ds3-mysql-
 
   tasks:
     - include_vars: credentials/ovirt-credentials.yaml
@@ -52,6 +50,10 @@
   hosts: web_hosts
   gather_facts: true
   become: true
+
+  vars:    
+    web_vm_hostname_prefix: ds3-web-
+    db_vm_hostname_prefix: ds3-mysql-
 
   tasks:
 

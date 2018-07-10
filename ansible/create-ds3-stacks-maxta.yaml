@@ -1,4 +1,4 @@
-- name: Initialize DS2 DB oVirt VMs created by Maxta
+- name: Initialize DS3 DB and Web oVirt VMs created by Maxta
   hosts: localhost
   connection: local
   gather_facts: false
