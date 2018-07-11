@@ -15,7 +15,7 @@
     - assert:
         that:
           - engine_url is defined
-          - engine_user id defined
+          - engine_user is defined
           - engine_password is defined
 
     - ovirt_auth:
