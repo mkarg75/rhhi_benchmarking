@@ -48,7 +48,7 @@
 
 - name: Set up DB hosts for mysql monitoring
   hosts: db_hosts
-  gather_facts: true
+  gather_facts: false
   become: true
 
   tasks:
