@@ -4,7 +4,7 @@
   gather_facts: false
 
   vars: 
-     engine_url: https://rhvm.microlab/ovirt-engine/api
+     engine_url: https://rhvm.poc4.maxta.com/ovirt-engine/api
      engine_user: admin@internal
 
      db_vm_tag: ds-mysql
