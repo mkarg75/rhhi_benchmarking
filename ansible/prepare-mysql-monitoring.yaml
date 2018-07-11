@@ -4,7 +4,7 @@
   gather_facts: false
 
   vars: 
-     engine_url: https://rhvm.microlab/ovirt-engine/api
+     engine_url: https://rhvm.poc4.maxta.com/ovirt-engine/api
      engine_user: admin@internal
 
      db_vm_tag: ds-mysql
@@ -15,7 +15,7 @@
     - assert:
         that:
           - engine_url is defined
-          - engine_user id defined
+          - engine_user is defined
           - engine_password is defined
 
     - ovirt_auth:
@@ -48,7 +48,7 @@
 
 - name: Set up DB hosts for mysql monitoring
   hosts: db_hosts
-  gather_facts: true
+  gather_facts: false
   become: true
 
   tasks:
@@ -63,7 +63,7 @@
 
     - name: Install collectd requirements
       yum:
-        name: {{ item }}
+        name: "{{ item }}"
         state: present
       with_items:
         - collectd
