@@ -151,12 +151,12 @@ def main(argv):
             if (ds2 == 0 and ds3 ==0):
                 print "At least one ds2 or ds3 container need to run and both are set to 0, exiting"
                 sys.exit(1)
-        elif opt in ("-i" "--id"):
+        elif opt in ("-i", "--id"):
             idstring = arg
             if idstring == '':
                 print "No identification string given, exiting"
                 sys.exit(1)
-        elif opt in ("-u" "--uuid"):
+        elif opt in ("-u", "--uuid"):
             uid = arg
 
     # get the number of threads
