@@ -198,11 +198,12 @@ def main(argv):
     if "rhel24" in hostname:
         # we only need to do the annotation once, so let's do it from host load-1
         # build the command string
-        for dashboard in range (2, 6):
+        for dashboard in range (2, 10):
         #cmd = 'curl -X POST http://admin:admin@192.168.104.17:3000/api/annotations -H "Content-Type: application/json" -d \'{"dashboardId":2,"time":' + str(starttime) + ',"isRegion":true,"timeEnd":' + str(endtime) + ',"tags":["' + uid + '"],"text":"' + idstring + '"}\''
             cmd = 'curl -X POST http://admin:admin@192.168.104.17:3000/api/annotations -H "Content-Type: application/json" -d \'{"dashboardId":' + str(dashboard) + ',"time":' + str(starttime) + ',"isRegion":true,"timeEnd":' + str(endtime) + ',"tags":["' + uid + '"],"text":"' + idstring + '"}\''
         # run the command
         result = commands.getoutput(cmd)
+        print result
 
     # close the DB connection
     conn.close
