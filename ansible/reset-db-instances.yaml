@@ -1,4 +1,4 @@
-- name: Find DB Instances
+- name: Reset Database instances
   hosts: localhost
   connection: local
   gather_facts: false
@@ -118,6 +118,22 @@
           name: web
           host: '%'
           password: web
+          priv: '*.*:ALL'
+          state: present
+
+      - name: create the benchmark user ds2_user
+        mysql_user:
+          name: ds2_user
+          host: '%'
+          password: ds2_password
+          priv: '*.*:ALL'
+          state: present
+
+      - name: create the benchmark user ds3_user
+        mysql_user:
+          name: ds3_user
+          host: '%'
+          password: ds3_password
           priv: '*.*:ALL'
           state: present
 

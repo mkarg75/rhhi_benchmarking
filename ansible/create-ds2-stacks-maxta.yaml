@@ -43,6 +43,7 @@
           - nic_name: eth0
           - nic_boot_protocol: static
           - host_name: "ds2-mysql-{{ item }}"
+          - dns_search: poc4.maxta.com
 
   tasks:
 

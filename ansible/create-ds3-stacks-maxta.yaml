@@ -1,0 +1,147 @@
+- name: Initialize DS3 DB and Web oVirt VMs created by Maxta
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    how_many: 1
+    engine_url: https://rhvm.poc4.maxta.com/ovirt-engine/api
+    engine_user: admin@internal
+
+    db_vm_tag: ds-mysql
+    ds3_db_vm_tag: ds3-mysql-50gb
+
+    web_vm_tag: ds-web
+    ds3_web_vm_tag: ds3-web
+
+    dataset_disk_id: 691fbc54-096d-4b6b-979a-92e5511d9917
+
+    ds3_db_vm:
+      name: "ds3-mysql-{{ item }}"
+      tag: "{{ ds3_db_vm_tag }}"
+      profile:
+        state: running
+        cluster: Default
+        clone: yes
+        operating_system: rhel_7x64
+        placement_policy: migratable
+        type: server
+        memory: 8GiB
+        memory_guaranteed: 8GiB
+        memory_max: 8GiB
+        cpu_cores: 4
+        cpu_sockets: 1
+        io_threads: 2
+        ssh_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCigf7/7tL20IMSHEYqaULiFV5A1I2lDM3kYk8RAMRhMgYDs+L3PBZoioxBgCJJTw+uSgJWfw3OOpMVKwF6ll/oK+hxB6V4NbTSsCbJID0K18bFrUWmXwzS5QU6YWtjcbRrwIo++PSUjG75UMacmDEPS+fuBDcq5JJ5miuepg8+lSZeoy16YsO2AjC8wTzWX+iTzdBk/xSOR8iQojxiMnfJ7rR1u8lO2lJEjTjGMtWqYUlr2xveZFBpQN6L7JnW8sX+At2D7nl0Mw3l//GpQiqUj6HtGO41EQ4fdM9SN8W1Mw7U23pm8Od50f8AFM9gJuVKKNcVP58X1FK1bXbQd98V root@localhost.localdomain
+        graphical_console:
+          protocol:
+            - spice
+            - vnc
+        cloud_init:
+          - dns_servers: "192.168.104.5"
+          - nic_ip_address: "192.168.105.{{ item | int }}"
+          - nic_gateway: 192.168.104.1
+          - nic_netmask: 255.255.252.0
+          - nic_on_boot: true
+          - nic_name: eth0
+          - nic_boot_protocol: static
+          - host_name: "ds3-mysql-{{ item }}"
+          - dns_search: poc4.maxta.com
+
+    ds3_web_vm:
+      name: "ds3-web-{{ item }}"
+      tag: "{{ ds3_web_vm_tag }}"
+      profile:
+        state: running
+        cluster: Default
+        clone: yes
+        operating_system: rhel_7x64
+        placement_policy: migratable
+        type: server
+        memory: 2GiB
+        memory_guaranteed: 2GiB
+        memory_max: 2GiB
+        cpu_cores: 2
+        cpu_sockets: 1
+        ssh_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCigf7/7tL20IMSHEYqaULiFV5A1I2lDM3kYk8RAMRhMgYDs+L3PBZoioxBgCJJTw+uSgJWfw3OOpMVKwF6ll/oK+hxB6V4NbTSsCbJID0K18bFrUWmXwzS5QU6YWtjcbRrwIo++PSUjG75UMacmDEPS+fuBDcq5JJ5miuepg8+lSZeoy16YsO2AjC8wTzWX+iTzdBk/xSOR8iQojxiMnfJ7rR1u8lO2lJEjTjGMtWqYUlr2xveZFBpQN6L7JnW8sX+At2D7nl0Mw3l//GpQiqUj6HtGO41EQ4fdM9SN8W1Mw7U23pm8Od50f8AFM9gJuVKKNcVP58X1FK1bXbQd98V root@localhost.localdomain
+        graphical_console:
+          protocol:
+            - spice
+            - vnc
+        cloud_init:
+          - dns_servers: "192.168.104.5"
+          - nic_ip_address: "192.168.106.{{ item | int }}"
+          - nic_gateway: 192.168.104.1
+          - nic_netmask: 255.255.252.0
+          - nic_on_boot: true
+          - nic_name: eth0
+          - nic_boot_protocol: static
+          - host_name: "ds3-web-{{ item }}"
+          - dns_search: poc4.maxta.com
+
+  tasks:
+
+    - include_vars: credentials/ovirt-credentials.yaml
+
+    - assert:
+        that:
+          - how_many is defined
+          - engine_url is defined
+          - engine_user is defined
+          - engine_password is defined
+
+    - ovirt_auth:
+        url: "{{ engine_url }}"
+        username: "{{ engine_user }}"
+        password: "{{ engine_password }}"
+
+    - set_fact:
+        ds3_db_vms: "{{ (ds3_db_vms | default([])) + [ds3_db_vm] }}"
+        ds3_web_vms: "{{ (ds3_web_vms | default([])) + [ds3_web_vm] }}"
+      with_sequence: "start=1 count={{ how_many }}"
+
+    - set_fact:
+        ds_db_vm_names: "{{ ds3_db_vms | map(attribute='name') | list }}"
+        ds_web_vm_names: "{{ ds3_web_vms | map(attribute='name') | list }}"
+
+    - name: Run DS3 DB oVirt VMs
+      include_role: name=ovirt-ansible-vm-infra
+      vars:
+        vms: "{{ ds3_db_vms }}"
+
+    - name: Tag DS3 database VMs with {{ db_vm_tag }}
+      ovirt_tags:
+        auth: "{{ ovirt_auth }}"
+        name: "{{ db_vm_tag }}"
+        vms: "{{ ds_db_vm_names }}"
+
+    - name: Tag DS3 database VMs with {{ ds3_db_vm_tag }}
+      ovirt_tags:
+        auth: "{{ ovirt_auth }}"
+        name: "{{ ds3_db_vm_tag }}"
+        vms: "{{ ds_db_vm_names }}"
+
+    - name: Run DS3 Web oVirt VMs
+      include_role: name=ovirt-ansible-vm-infra
+      vars:
+        vms: "{{ ds3_web_vms }}"
+
+    - name: Tag DS3 web VMs with {{ web_vm_tag }}
+      ovirt_tags:
+        auth: "{{ ovirt_auth }}"
+        name: "{{ web_vm_tag }}"
+        vms: "{{ ds_web_vm_names }}"
+
+    - name: Tag DS3 web VMs with {{ ds3_web_vm_tag }}
+      ovirt_tags:
+        auth: "{{ ovirt_auth }}"
+        name: "{{ ds3_web_vm_tag }}"
+        vms: "{{ ds_web_vm_names }}"
+
+    - name: Attach dataset disk
+      ovirt_disk:
+        auth: "{{ ovirt_auth }}"
+        id: "{{ dataset_disk_id }}"
+        vm_name: "{{ item }}"
+        interface: virtio
+      with_items: "{{ ds_db_vm_names }}"
