@@ -201,9 +201,8 @@ def main(argv):
         for dashboard in range (2, 10):
         #cmd = 'curl -X POST http://admin:admin@192.168.104.17:3000/api/annotations -H "Content-Type: application/json" -d \'{"dashboardId":2,"time":' + str(starttime) + ',"isRegion":true,"timeEnd":' + str(endtime) + ',"tags":["' + uid + '"],"text":"' + idstring + '"}\''
             cmd = 'curl -X POST http://admin:admin@192.168.104.17:3000/api/annotations -H "Content-Type: application/json" -d \'{"dashboardId":' + str(dashboard) + ',"time":' + str(starttime) + ',"isRegion":true,"timeEnd":' + str(endtime) + ',"tags":["' + uid + '"],"text":"' + idstring + '"}\''
-        # run the command
-        result = commands.getoutput(cmd)
-        print result
+            result = commands.getoutput(cmd)
+            print result
 
     # close the DB connection
     conn.close
