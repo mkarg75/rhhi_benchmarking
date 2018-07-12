@@ -128,7 +128,6 @@ def main(argv):
     ds2 = 0
     ds3 = 0
     idstring = ''
-    global uid 
 
     try:
         opts, args = getopt.getopt(argv,"hs:d:e:i:",["stacks=","ds2=","ds3=","id="])
