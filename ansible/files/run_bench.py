@@ -27,7 +27,7 @@ def get_threads():
     # we can rely on DriverConfig.txt.0 to be there since we need to run at least one container
     # if it is not, we bail out
     try:
-        fh = open("dsmysqldriver/DriverConfig.txt.0")
+        fh = open("ds2mysqldriver/DriverConfig.txt.0")
     except: 
         print "Unable to open DriverConfig.txt.0, exiting"
         sys.exit(1)
