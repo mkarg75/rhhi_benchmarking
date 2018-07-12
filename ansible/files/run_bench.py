@@ -130,14 +130,14 @@ def main(argv):
     idstring = ''
 
     try:
-        opts, args = getopt.getopt(argv,"hs:d:e:i:",["stacks=","ds2=","ds3=","id="])
+        opts, args = getopt.getopt(argv,"hs:d:e:i:u:",["stacks=","ds2=","ds3=","id=", "uuid="])
     except getopt.GetoptError:
         print 'getopt_error: run_bench.py -s <stacks> -d <ds2_instances> -e <ds3_instances> -i <idstring>'
         sys.exit(2)
     # validating command line options
     for opt, arg in opts:
         if opt in ("-h", "--help"):
-            print 'run_bench.py -s <stacks> -d <ds2_instances> -e <ds3_instances> -i <idstring>'
+            print 'run_bench.py -s <stacks> -d <ds2_instances> -e <ds3_instances> -i <idstring> -u <uuid>'
             sys.exit()
         elif opt in ("-s", "--stacks"):
             stacks = arg
