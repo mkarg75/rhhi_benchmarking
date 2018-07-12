@@ -63,9 +63,11 @@
         group: root
         mode: 0755
 
-   - name: create the directory for the config files
-     file: path=/root/dsmysqldriver state=directory
+   - name: create the directory for the ds2 config files
+     file: path=/root/ds2mysqldriver state=directory
 
+   - name: create the directory for the ds3 config files
+     file: path=/root/ds3mysqldriver state=directory
 
    - name: Copy collectd config file
      template:
@@ -82,7 +84,7 @@
    - name: create config files for the containers
      template:
          src: templates/DriverConfig.txt.j2
-         dest: /root/dsmysqldriver/DriverConfig.txt.{{ item.0 }}
+         dest: /root/ds2mysqldriver/DriverConfig.txt.{{ item.0 }}
          owner: root
          group: root
          mode: 0644
@@ -95,7 +97,7 @@
    - name: create config files for the containers
      template:
          src: templates/DriverConfig.txt.j2
-         dest: /root/dsmysqldriver/DriverConfig.txt.{{ item.0 }}
+         dest: /root/ds2mysqldriver/DriverConfig.txt.{{ item.0 }}
          owner: root
          group: root
          mode: 0644
@@ -108,7 +110,7 @@
    - name: create config files for the containers
      template:
          src: templates/DriverConfig.txt.j2
-         dest: /root/dsmysqldriver/DriverConfig.txt.{{ item.0 }}
+         dest: /root/ds2mysqldriver/DriverConfig.txt.{{ item.0 }}
          owner: root
          group: root
          mode: 0644
