@@ -52,10 +52,10 @@ def ds2_subp():
      processes[proc] = typ
      c_counter += 1
 
-def ds3_supb():
+def ds3_subp():
      global c_counter
      typ = "ds3"
-     cmd = 'docker run -t -v /root/ds3mysqldriver/DriverConfig.txt.' + str(c_counter) + ':/opt/app-root/app/driver_config.ini:Z dmesser/ds3mysqldriver:latest'
+     cmd = 'docker run -t -v /root/ds3webdriver/DriverConfig.txt.' + str(c_counter) + ':/opt/app-root/app/driver_config.ini:Z dmesser/ds3webdriver:latest'
      proc = (subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE))
      testdic['proc'] = typ
      c_counter += 1
