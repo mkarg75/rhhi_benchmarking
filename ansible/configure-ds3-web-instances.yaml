@@ -79,6 +79,12 @@
         line: mysql.default_password = ds3_password
         regexp: '^mysql.default_password='
         state: present
+    
+    - name: enable apache to connect to the db 
+      seboolean:
+        name: httpd_can_network_connect_db
+        state: yes
+        persistent: yes
 
     - name: restart httpd service
       service: name=httpd state=restarted enabled=yes
