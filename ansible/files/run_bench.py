@@ -57,7 +57,7 @@ def ds3_subp():
      typ = "ds3"
      cmd = 'docker run -t -v /root/ds3webdriver/DriverConfig.txt.' + str(c_counter) + ':/opt/app-root/app/driver_config.ini:Z dmesser/ds3webdriver:latest'
      proc = (subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE))
-     testdic['proc'] = typ
+     processes['proc'] = typ
      c_counter += 1
 
 def updatedb(result, typ, conn, stacks, threads, uid, idstring, db_size):
