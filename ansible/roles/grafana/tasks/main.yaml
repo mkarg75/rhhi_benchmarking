@@ -1,3 +1,7 @@
+- vars:
+    required_repos:
+    - rhel-7-server-rpms
+
 - name: Add grafana repository
   yum_repository:
     name: grafana
