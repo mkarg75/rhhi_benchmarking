@@ -77,7 +77,7 @@
        group: root
        mode: 0644
 
-- hosts: rhel24.poc4.maxta.com
+- hosts: rhvh4.example.com
 
   tasks:
 
@@ -100,7 +100,7 @@
      loop: "{{ range(0,51,1)|list|zip(range(1,250,3))|list }}"
 
 
-- hosts: rhel26.poc4.maxta.com
+- hosts: rhvh5.example.com
 
   tasks:
 
@@ -123,7 +123,7 @@
      loop: "{{ range(0,51,1)|list|zip(range(2,250,3))|list }}"
 
 
-- hosts: rhel28.poc4.maxta.com
+- hosts: rhvh6.example.com
 
   tasks:
 
