@@ -5,9 +5,9 @@
 
   vars:
     how_many: 1
-    engine_url: https://rhvm.poc4.maxta.com/ovirt-engine/api
+    engine_url: https://engine.example.com/ovirt-engine/api
     engine_user: admin@internal
-    template_name: ds2-mysql-50gb-template-without-data
+    template_name: rhodain-template
 
     db_vm_tag: ds-mysql
     db_ds2_vm_tag: ds2-mysql-50gb
@@ -29,21 +29,23 @@
         cpu_cores: 4
         cpu_sockets: 1
         io_threads: 2
-        ssh_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCigf7/7tL20IMSHEYqaULiFV5A1I2lDM3kYk8RAMRhMgYDs+L3PBZoioxBgCJJTw+uSgJWfw3OOpMVKwF6ll/oK+hxB6V4NbTSsCbJID0K18bFrUWmXwzS5QU6YWtjcbRrwIo++PSUjG75UMacmDEPS+fuBDcq5JJ5miuepg8+lSZeoy16YsO2AjC8wTzWX+iTzdBk/xSOR8iQojxiMnfJ7rR1u8lO2lJEjTjGMtWqYUlr2xveZFBpQN6L7JnW8sX+At2D7nl0Mw3l//GpQiqUj6HtGO41EQ4fdM9SN8W1Mw7U23pm8Od50f8AFM9gJuVKKNcVP58X1FK1bXbQd98V root@localhost.localdomain
+        ssh_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDAOAqqV8jfqo9xFDJ4DfDdVkrCAzQaEZOQey/CFK2ZUeO0nHehMGminapv6PeHLA/yijC9RXfozTowYaZmKfa1K23u0BFFMSb86dJmBWZNia+LPHb/vTpyZkCT/qXV5z9GmZalHJ8Ia1jREkUyrlulOLricW39RMNlHKvsOKZqAgnaZFudDSxKgsGEWS6oqqWqBH7A/fgjBMGBZtQBriqQT3ddFM2BqO4iMMHQfos+977fc4iGL12nI1rH1y7neUtX119mKpgmYCRtgy6soSwzeLe027LJUyF7DUWae54NgepSuHXxsHvsUbDUQKgJI3nwhjqeoEIJCZ/k5btbq3g3 root@rhvh4.example.com
         graphical_console:
           protocol:
             - spice
             - vnc
         cloud_init_persist: false
         cloud_init:
-          - nic_ip_address: "192.168.107.{{ item | int }}"
-          - nic_gateway: 192.168.104.1
-          - nic_netmask: 255.255.252.0
-          - nic_on_boot: true
-          - nic_name: eth0
-          - nic_boot_protocol: static
-          - host_name: "ds2-mysql-{{ item }}"
-          - dns_search: poc4.maxta.com
+          nic_ip_address: "10.227.17.{{ item | int }}"
+          nic_gateway: 10.227.16.1
+          nic_netmask: 255.255.252.0
+          nic_on_boot: true
+          nic_name: eth0
+          nic_boot_protocol: static
+          host_name: "ds2-mysql-{{ item }}"
+          dns_search: example.com
+          user_name: root
+          root_password: "RedHat1!"
 
   tasks:
 
@@ -68,10 +70,14 @@
     - name: Create DS2 DB oVirt VMs
       include_role: name=ovirt-ansible-vm-infra
       vars:
+        debug_vm_create: true
+        vm_infra_create_single_timeout: 800
         vms: "{{ ds2_db_vms }}"
+        wait_for_ip: false
 
     - name: Tag DS2 database VMs with {{ db_vm_tag }}
       ovirt_tags:
         auth: "{{ ovirt_auth }}"
         name: "{{ db_vm_tag }}"
         vms: "{{ ds2_db_vms | map(attribute='name') | list }}"
+
