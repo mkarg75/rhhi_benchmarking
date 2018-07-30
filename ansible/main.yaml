@@ -1,5 +1,5 @@
 ---
-  - hosts: grafana_nodes
+  - hosts: grafana
     roles:
       - grafana
       - db_servers

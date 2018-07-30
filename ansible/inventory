@@ -3,6 +3,9 @@ rhvh4.example.com
 rhvh5.example.com
 rhvh6.example.com
 
+[grafana]
+rhvh4.example.com
+
 [ds_nodes]
 
 [load_drivers]
