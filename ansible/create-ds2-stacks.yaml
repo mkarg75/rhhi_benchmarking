@@ -7,7 +7,7 @@
     how_many: 1
     engine_url: https://rhvm.poc4.maxta.com/ovirt-engine/api
     engine_user: admin@internal
-    template_name: ds2-mysql-50gb-template-without-data
+    template_name: ds2-mysql-50gb
 
     db_vm_tag: ds-mysql
     db_ds2_vm_tag: ds2-mysql-50gb
