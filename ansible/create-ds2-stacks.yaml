@@ -26,6 +26,8 @@
         memory: 8GiB
         memory_guaranteed: 8GiB
         memory_max: 8GiB
+        disks:
+          - format: cow
         cpu_cores: 4
         cpu_sockets: 1
         io_threads: 2
