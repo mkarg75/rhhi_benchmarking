@@ -17,6 +17,7 @@
       tag: "{{ db_ds2_vm_tag }}"
       profile:
         disk_alloc: thin
+        storage_domain: vmstore
         state: running
         cluster: Default
         template: "{{ template_name }}"
