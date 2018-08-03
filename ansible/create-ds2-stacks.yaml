@@ -7,7 +7,7 @@
     how_many: 1
     engine_url: https://rhvm.poc4.maxta.com/ovirt-engine/api
     engine_user: admin@internal
-    template_name: ds2-mysql-50gb
+    template_name: ds2-mysql-50g
 
     db_vm_tag: ds-mysql
     db_ds2_vm_tag: ds2-mysql-50gb
@@ -16,6 +16,7 @@
       name: "ds2-mysql-{{ item }}"
       tag: "{{ db_ds2_vm_tag }}"
       profile:
+        disk_alloc: thin
         state: running
         cluster: Default
         template: "{{ template_name }}"
@@ -26,8 +27,6 @@
         memory: 8GiB
         memory_guaranteed: 8GiB
         memory_max: 8GiB
-        disks:
-          - format: cow
         cpu_cores: 4
         cpu_sockets: 1
         io_threads: 2
