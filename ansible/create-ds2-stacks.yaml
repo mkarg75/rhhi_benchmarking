@@ -16,6 +16,7 @@
       name: "ds2-mysql-{{ item }}"
       tag: "{{ db_ds2_vm_tag }}"
       profile:
+        delete_protected: no
         disk_alloc: thin
         storage_domain: vmstore
         state: running
