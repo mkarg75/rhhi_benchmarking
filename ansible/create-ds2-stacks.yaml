@@ -75,8 +75,8 @@
       vars:
         vms: "{{ ds2_db_vms }}"
 
-    - name: Tag DS2 database VMs with {{ db_vm_tag }}
-      ovirt_tags:
-        auth: "{{ ovirt_auth }}"
-        name: "{{ db_vm_tag }}"
-        vms: "{{ ds2_db_vms | map(attribute='name') | list }}"
+#    - name: Tag DS2 database VMs with {{ db_vm_tag }}
+#      ovirt_tags:
+#        auth: "{{ ovirt_auth }}"
+#        name: "{{ db_vm_tag }}"
+#        vms: "{{ ds2_db_vms | map(attribute='name') | list }}"
