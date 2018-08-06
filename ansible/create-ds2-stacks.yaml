@@ -79,4 +79,4 @@
         #ovirt_tags:
         #auth: "{{ ovirt_auth }}"
         #name: "{{ db_vm_tag }}"
-        vms: "{{ ds2_db_vms | map(attribute='name') | list }}"
+        #vms: "{{ ds2_db_vms | map(attribute='name') | list }}"
