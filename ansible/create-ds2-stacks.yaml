@@ -22,7 +22,7 @@
         state: running
         cluster: Default
         template: "{{ template_name }}"
-        clone: no
+        clone: yes
         storage_domain: vmstore
         operating_system: rhel_7x64
         placement_policy: migratable
