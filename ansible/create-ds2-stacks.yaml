@@ -17,7 +17,7 @@
       tag: "{{ db_ds2_vm_tag }}"
       delete_protected: no
       profile:
-        disk_alloc: thin
+        disk_format: raw
         storage_domain: vmstore
         state: running
         cluster: Default
@@ -39,7 +39,7 @@
           protocol:
             - spice
             - vnc
-        cloud_init_persist: false
+        cloud_init_persist: true
         cloud_init:
           - nic_ip_address: "192.168.107.{{ item | int }}"
           - nic_gateway: 192.168.104.1
