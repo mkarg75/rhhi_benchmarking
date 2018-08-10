@@ -16,13 +16,14 @@
       name: "ds2-mysql-{{ item }}"
       tag: "{{ db_ds2_vm_tag }}"
       delete_protected: no
+      timeout: 1800
       profile:
         disk_format: cow
         storage_domain: vmstore
         state: running
         cluster: Default
         template: "{{ template_name }}"
-        clone: no
+        clone: yes
         storage_domain: vmstore
         operating_system: rhel_7x64
         placement_policy: migratable
