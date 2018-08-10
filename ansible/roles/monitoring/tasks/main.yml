@@ -87,6 +87,39 @@
     policy: targeted
     state: permissive
 
+- name: install collectd-gluster prerequisites
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - python2-psutil
+    - collectd-virt
+
+- name: download collectd-gluster
+  unarchive:
+    src: https://github.com/gluster/gluster-collectd/archive/master.zip
+    dest: /tmp
+    remote_src: yes
+
+- name: create directory for collectd-gluster
+  file:
+    path: /usr/lib64/collectd/gluster-collectd
+    state: directory
+    mode: 0755
+
+- name: copy collectd-gluster files
+  shell: cp -a /tmp/gluster-collectd-master/{{ item.0 }} {{ item.1 }}
+  with_together:
+    - [src/*, conf/gluster.conf.template, types/types.db.gluster]
+    - [/usr/lib64/collectd/gluster-collectd/, /etc/collectd.d/gluster.conf, /usr/share/collectd/]
+
+- name: hack to fix collectd service not starting
+  lineinfile:
+    path: /usr/lib64/collectd/gluster-collectd/gluster_plugins/brick_stats.py
+    regexp: '(^\s*)self.CONFIG'
+    line: '\1socket.gethostname()'
+    backrefs: yes
+
 - name: (re)start and enable collectd
   service:
     name: collectd
